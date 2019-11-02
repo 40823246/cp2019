@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>CP2019 40823246</title><link href="./" rel="alternate"></link><link href=".%5Cfeeds/all.atom.xml" rel="self"></link><id>./</id><updated>2019-10-30T11:00:00+08:00</updated><entry><title>2019 Fall CP 課程</title><link href=".%5Cindex.html" rel="alternate"></link><published>2019-10-30T11:00:00+08:00</published><updated>2019-10-30T11:00:00+08:00</updated><author><name>40823246</name></author><id>tag:None,2019-10-30:.\index.html</id><summary type="html">&lt;p&gt;2019 Fall 一開始, 1903 版的 Windows 10 就大舉更新, 除了逐步去掉先前許多舊版的設定視窗, 也將系統的指令搜尋與 App 應用程式進行綁定. 許多採用可攜設定的程式執行流程, 隨著更新進程的推展, 必須因應修改才可以正常運作.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>CP2019 40823246</title><link href="https://40823246.github.io/cp2019/blog/" rel="alternate"></link><link href="https://40823246.github.io/cp2019/blog/feeds/all.atom.xml" rel="self"></link><id>https://40823246.github.io/cp2019/blog/</id><updated>2019-10-30T11:00:00+08:00</updated><entry><title>2019 Fall CP 課程</title><link href="https://40823246.github.io/cp2019/blog/index.html" rel="alternate"></link><published>2019-10-30T11:00:00+08:00</published><updated>2019-10-30T11:00:00+08:00</updated><author><name>40823246</name></author><id>tag:40823246.github.io,2019-10-30:/cp2019/blog/index.html</id><summary type="html">&lt;script&gt;
+function getDart(dirname){
+    source = "https://dartpad.github.io/embed-dart.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
+    document.getElementById("iframe").src = source ;
+}
+
+function getHtmlDart(dirname){
+    source = "https://dartpad.github.io/embed-html.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
+document.getElementById("iframe").src = source …&lt;/script&gt;</summary><content type="html">&lt;script&gt;
+function getDart(dirname){
+    source = "https://dartpad.github.io/embed-dart.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
+    document.getElementById("iframe").src = source ;
+}
+
+function getHtmlDart(dirname){
+    source = "https://dartpad.github.io/embed-html.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
+document.getElementById("iframe").src = source ;
+}
+
+function getFlutter(dirname){
+    source = "https://dartpad.github.io/embed-flutter.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
+document.getElementById("iframe").src = source ;
+}
+
+function largest(){
+document.getElementById("iframe").width = document.body.clientWidth ;
+document.getElementById("iframe").height = document.body.clientWidth*0.5 ;
+}
+
+function original(){
+document.getElementById("iframe").width = 800 ;
+document.getElementById("iframe").height = 600 ;
+}
+&lt;/script&gt;
+
+&lt;!-- 取 Dart 程式的按鈕 --&gt;
+
+&lt;p&gt;&lt;button onclick="largest()"&gt;放大&lt;/button&gt; &lt;button onclick="original()"&gt;回復&lt;/button&gt; &lt;button onclick="getDart('hello')"&gt;Hello&lt;/button&gt; &lt;button onclick="getDart('for')"&gt;For Loop&lt;/button&gt; &lt;button onclick="getDart('sum')"&gt;Sum&lt;/button&gt; &lt;button onclick="getDart('runge_kutta')"&gt;Runge-Kutta&lt;/button&gt;&lt;/p&gt;
+
+&lt;!-- 內建放入的 Dart 原始碼 --&gt;
+
+&lt;p&gt;&lt;iframe height="600" id="iframe" src="https://dartpad.dartlang.org/embed-dart.html?gh_owner=mdecourse&amp;amp;gh_repo=cp2019&amp;amp;gh_path=downloads/dart_ex/mass_spring_damping&amp;amp;theme=dark" width="800"&gt;&lt;/iframe&gt;&lt;/p&gt;</content><category term="2019FallCP"></category></entry><entry><title>2019 Fall CP 課程</title><link href="https://40823246.github.io/cp2019/blog/index.html" rel="alternate"></link><published>2019-10-30T11:00:00+08:00</published><updated>2019-10-30T11:00:00+08:00</updated><author><name>40823246</name></author><id>tag:40823246.github.io,2019-10-30:/cp2019/blog/index.html</id><summary type="html">&lt;p&gt;2019 Fall 一開始, 1903 版的 Windows 10 就大舉更新, 除了逐步去掉先前許多舊版的設定視窗, 也將系統的指令搜尋與 App 應用程式進行綁定. 許多採用可攜設定的程式執行流程, 隨著更新進程的推展, 必須因應修改才可以正常運作.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;2019 Fall 一開始, 1903 版的 Windows 10 就大舉更新, 除了逐步去掉先前許多舊版的設定視窗, 也將系統的指令搜尋與 App 應用程式進行綁定. 許多採用可攜設定的程式執行流程, 隨著更新進程的推展, 必須因應修改才可以正常運作.&lt;/p&gt;
 
 
@@ -84,89 +125,7 @@ if PLAT_WIN
 &lt;!-- for LaTeX equations --&gt;
 &lt;script src="https://scrum-3.github.io/web/math/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"&gt;&lt;/script&gt;
 
-&lt;/pre&gt;</content><category term="2019FallCP"></category></entry><entry><title>2019 Fall CP 課程</title><link href=".%5Cindex.html" rel="alternate"></link><published>2019-10-30T11:00:00+08:00</published><updated>2019-10-30T11:00:00+08:00</updated><author><name>40823246</name></author><id>tag:None,2019-10-30:.\index.html</id><summary type="html">&lt;script&gt;
-function getDart(dirname){
-    source = "https://dartpad.github.io/embed-dart.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
-    document.getElementById("iframe").src = source ;
-}
-
-function getHtmlDart(dirname){
-    source = "https://dartpad.github.io/embed-html.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
-document.getElementById("iframe").src = source …&lt;/script&gt;</summary><content type="html">&lt;script&gt;
-function getDart(dirname){
-    source = "https://dartpad.github.io/embed-dart.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
-    document.getElementById("iframe").src = source ;
-}
-
-function getHtmlDart(dirname){
-    source = "https://dartpad.github.io/embed-html.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
-document.getElementById("iframe").src = source ;
-}
-
-function getFlutter(dirname){
-    source = "https://dartpad.github.io/embed-flutter.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
-document.getElementById("iframe").src = source ;
-}
-
-function largest(){
-document.getElementById("iframe").width = document.body.clientWidth ;
-document.getElementById("iframe").height = document.body.clientWidth*0.5 ;
-}
-
-function original(){
-document.getElementById("iframe").width = 800 ;
-document.getElementById("iframe").height = 600 ;
-}
-&lt;/script&gt;
-
-&lt;!-- 取 Dart 程式的按鈕 --&gt;
-
-&lt;p&gt;&lt;button onclick="largest()"&gt;放大&lt;/button&gt; &lt;button onclick="original()"&gt;回復&lt;/button&gt; &lt;button onclick="getDart('hello')"&gt;Hello&lt;/button&gt; &lt;button onclick="getDart('for')"&gt;For Loop&lt;/button&gt; &lt;button onclick="getDart('sum')"&gt;Sum&lt;/button&gt; &lt;button onclick="getDart('runge_kutta')"&gt;Runge-Kutta&lt;/button&gt;&lt;/p&gt;
-
-&lt;!-- 內建放入的 Dart 原始碼 --&gt;
-
-&lt;p&gt;&lt;iframe height="600" id="iframe" src="https://dartpad.dartlang.org/embed-dart.html?gh_owner=mdecourse&amp;amp;gh_repo=cp2019&amp;amp;gh_path=downloads/dart_ex/mass_spring_damping&amp;amp;theme=dark" width="800"&gt;&lt;/iframe&gt;&lt;/p&gt;</content><category term="2019FallCP"></category></entry><entry><title>2019 Fall CP 課程</title><link href=".%5Cindex.html" rel="alternate"></link><published>2019-10-30T11:00:00+08:00</published><updated>2019-10-30T11:00:00+08:00</updated><author><name>40823246</name></author><id>tag:None,2019-10-30:.\index.html</id><summary type="html">&lt;script&gt;
-function getDart(dirname){
-    source = "https://dartpad.github.io/embed-dart.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
-    document.getElementById("iframe").src = source ;
-}
-
-function getHtmlDart(dirname){
-    source = "https://dartpad.github.io/embed-html.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
-document.getElementById("iframe").src = source …&lt;/script&gt;</summary><content type="html">&lt;script&gt;
-function getDart(dirname){
-    source = "https://dartpad.github.io/embed-dart.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
-    document.getElementById("iframe").src = source ;
-}
-
-function getHtmlDart(dirname){
-    source = "https://dartpad.github.io/embed-html.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
-document.getElementById("iframe").src = source ;
-}
-
-function getFlutter(dirname){
-    source = "https://dartpad.github.io/embed-flutter.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
-document.getElementById("iframe").src = source ;
-}
-
-function largest(){
-document.getElementById("iframe").width = document.body.clientWidth ;
-document.getElementById("iframe").height = document.body.clientWidth*0.5 ;
-}
-
-function original(){
-document.getElementById("iframe").width = 800 ;
-document.getElementById("iframe").height = 600 ;
-}
-&lt;/script&gt;
-
-&lt;!-- 取 Dart 程式的按鈕 --&gt;
-
-&lt;p&gt;&lt;button onclick="largest()"&gt;放大&lt;/button&gt; &lt;button onclick="original()"&gt;回復&lt;/button&gt; &lt;button onclick="getDart('hello')"&gt;Hello&lt;/button&gt; &lt;button onclick="getDart('for')"&gt;For Loop&lt;/button&gt; &lt;button onclick="getDart('sum')"&gt;Sum&lt;/button&gt; &lt;button onclick="getDart('runge_kutta')"&gt;Runge-Kutta&lt;/button&gt;&lt;/p&gt;
-
-&lt;!-- 內建放入的 Dart 原始碼 --&gt;
-
-&lt;p&gt;&lt;iframe height="600" id="iframe" src="https://dartpad.dartlang.org/embed-dart.html?gh_owner=mdecourse&amp;amp;gh_repo=cp2019&amp;amp;gh_path=downloads/dart_ex/mass_spring_damping&amp;amp;theme=dark" width="800"&gt;&lt;/iframe&gt;&lt;/p&gt;</content><category term="2019FallCP"></category></entry><entry><title>2019 Fall CP 課程</title><link href=".%5Cindex.html" rel="alternate"></link><published>2019-10-30T11:00:00+08:00</published><updated>2019-10-30T11:00:00+08:00</updated><author><name>40823246</name></author><id>tag:None,2019-10-30:.\index.html</id><summary type="html">&lt;p&gt;2019 Fall 一開始, 1903 版的 Windows 10 就大舉更新, 除了逐步去掉先前許多舊版的設定視窗, 也將系統的指令搜尋與 App 應用程式進行綁定. 許多採用可攜設定的程式執行流程, 隨著更新進程的推展, 必須因應修改才可以正常運作.&lt;/p&gt;
+&lt;/pre&gt;</content><category term="2019FallCP"></category></entry><entry><title>2019 Fall CP 課程</title><link href="https://40823246.github.io/cp2019/blog/index.html" rel="alternate"></link><published>2019-10-30T11:00:00+08:00</published><updated>2019-10-30T11:00:00+08:00</updated><author><name>40823246</name></author><id>tag:40823246.github.io,2019-10-30:/cp2019/blog/index.html</id><summary type="html">&lt;p&gt;2019 Fall 一開始, 1903 版的 Windows 10 就大舉更新, 除了逐步去掉先前許多舊版的設定視窗, 也將系統的指令搜尋與 App 應用程式進行綁定. 許多採用可攜設定的程式執行流程, 隨著更新進程的推展, 必須因應修改才可以正常運作.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;2019 Fall 一開始, 1903 版的 Windows 10 就大舉更新, 除了逐步去掉先前許多舊版的設定視窗, 也將系統的指令搜尋與 App 應用程式進行綁定. 許多採用可攜設定的程式執行流程, 隨著更新進程的推展, 必須因應修改才可以正常運作.&lt;/p&gt;
 
 
@@ -251,4 +210,45 @@ if PLAT_WIN
 &lt;!-- for LaTeX equations --&gt;
 &lt;script src="https://scrum-3.github.io/web/math/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"&gt;&lt;/script&gt;
 
-&lt;/pre&gt;</content><category term="2019FallCP"></category></entry></feed>
+&lt;/pre&gt;</content><category term="2019FallCP"></category></entry><entry><title>2019 Fall CP 課程</title><link href="https://40823246.github.io/cp2019/blog/index.html" rel="alternate"></link><published>2019-10-30T11:00:00+08:00</published><updated>2019-10-30T11:00:00+08:00</updated><author><name>40823246</name></author><id>tag:40823246.github.io,2019-10-30:/cp2019/blog/index.html</id><summary type="html">&lt;script&gt;
+function getDart(dirname){
+    source = "https://dartpad.github.io/embed-dart.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
+    document.getElementById("iframe").src = source ;
+}
+
+function getHtmlDart(dirname){
+    source = "https://dartpad.github.io/embed-html.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
+document.getElementById("iframe").src = source …&lt;/script&gt;</summary><content type="html">&lt;script&gt;
+function getDart(dirname){
+    source = "https://dartpad.github.io/embed-dart.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
+    document.getElementById("iframe").src = source ;
+}
+
+function getHtmlDart(dirname){
+    source = "https://dartpad.github.io/embed-html.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
+document.getElementById("iframe").src = source ;
+}
+
+function getFlutter(dirname){
+    source = "https://dartpad.github.io/embed-flutter.html?gh_owner=mdecourse&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/" + dirname + "&amp;theme=dark";
+document.getElementById("iframe").src = source ;
+}
+
+function largest(){
+document.getElementById("iframe").width = document.body.clientWidth ;
+document.getElementById("iframe").height = document.body.clientWidth*0.5 ;
+}
+
+function original(){
+document.getElementById("iframe").width = 800 ;
+document.getElementById("iframe").height = 600 ;
+}
+&lt;/script&gt;
+
+&lt;!-- 取 Dart 程式的按鈕 --&gt;
+
+&lt;p&gt;&lt;button onclick="largest()"&gt;放大&lt;/button&gt; &lt;button onclick="original()"&gt;回復&lt;/button&gt; &lt;button onclick="getDart('hello')"&gt;Hello&lt;/button&gt; &lt;button onclick="getDart('for')"&gt;For Loop&lt;/button&gt; &lt;button onclick="getDart('sum')"&gt;Sum&lt;/button&gt; &lt;button onclick="getDart('runge_kutta')"&gt;Runge-Kutta&lt;/button&gt;&lt;/p&gt;
+
+&lt;!-- 內建放入的 Dart 原始碼 --&gt;
+
+&lt;p&gt;&lt;iframe height="600" id="iframe" src="https://dartpad.dartlang.org/embed-dart.html?gh_owner=mdecourse&amp;amp;gh_repo=cp2019&amp;amp;gh_path=downloads/dart_ex/mass_spring_damping&amp;amp;theme=dark" width="800"&gt;&lt;/iframe&gt;&lt;/p&gt;</content><category term="2019FallCP"></category></entry></feed>
