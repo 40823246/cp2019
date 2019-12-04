@@ -5,15 +5,15 @@ void main() {
 */
 
 /*
- * ¥D¨ç¦¡¤]¥i¥H§Q¥Î => ©w¸q³æ¦æªº¨ç¦¡¤º®e
+ * ä¸»å‡½å¼ä¹Ÿå¯ä»¥åˆ©ç”¨ => å®šç¾©å–®è¡Œçš„å‡½å¼å…§å®¹
 main() => print("Hello, World!");
 */
 
 /*
 import 'dart:math' as math;
 void main() {
-  var n = 0; // ¢XF
-  print("The ¢XF increases as:\n");
+  var n = 0; // Â°F
+  print("The Â°F increases as:\n");
   for (int temperatures = 0; temperatures <= 10; temperatures++) {
     n =(temperatures*1.8+32).round().toInt();
     print("Count $temperatures temperatures:\t $n temperatures");
@@ -26,7 +26,7 @@ import 'dart:math' as math;
 int temperatures = 0;
 const int NO_temperatures = 10;
 void main() {
-  print("The ¢XF increases as:\n");
+  print("The Â°F increases as:\n");
   for (int temperatures = 0) {
     temperaturesCount = calculatetemperatures(temperatures);
     print("Count $temperatures temperatures:\t $temperaturesCount temperatures");
@@ -66,9 +66,9 @@ int calculatetemperatures(int temperatures) {
 /*
 html
 temperatures<input type="number" id="temperatures" value="0" min="0" max="100"> 
-¢XC
+Â°C
 <input type="button" id="submit" value="Calculate"/>
-<br/>¢XF: <label id="output"></label>
+<br/>Â°F: <label id="output"></label>
 css
 body {
   color: white;
