@@ -1,0 +1,6 @@
+name: CF
+mode: html
+files:
+  - name: CF.DART
+  - name: index.html
+  - name: style.css
