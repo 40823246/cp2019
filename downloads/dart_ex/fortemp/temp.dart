@@ -1,9 +1,9 @@
 // 定義一個 C to F function
-cnfu(num c){
+ctof(num c){
 return c*9/5 + 32;
 }
 // define a F to C function
-fnfu(num f){
+ftoc(num f){
 return (f - 32)*5/9;
 }
 // 每一個 Dart 程式都從 main() 開始執行
@@ -39,9 +39,9 @@ main() {
     // 之後就可以根據 type 與 number 執行各數列元素的溫度轉換
     
     if (type == "C"){
-      print("攝氏 $number° = 華氏 ${cnfu(number)}°");
+      print("攝氏C $number° = 華氏F ${ctof(number)}°");
     }else{
-      print("華氏 $number° = 攝氏 ${fnfu(number)}°");
+      print("華氏F $number° = 攝氏C ${ftoc(number)}°");
     }
       
   } // for
