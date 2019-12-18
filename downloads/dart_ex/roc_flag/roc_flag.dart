@@ -28,19 +28,14 @@ void drawUSA(ctx){
   ctx.fillRect(0, 0, flag_w/2, flag_h/1.857);
   //白條紋
   ctx.fillStyle='rgb(255,255,255)';
-  ctx.fillRect(flag_w/2,flag_h/13,flag_w,flag_h/13);
-    ctx.fillStyle='rgb(255,255,255)';
+  ctx.fillRect(flag_w/2,flag_h/13,flag_w,flag_h/13);//將藍色高分13等分
   ctx.fillRect(flag_w/2,flag_h/4.3,flag_w,flag_h/13);
-     ctx.fillStyle='rgb(255,255,255)';
   ctx.fillRect(flag_w/2,flag_h/2.6,flag_w,flag_h/13);
-     ctx.fillStyle='rgb(255,255,255)';
   ctx.fillRect(0,flag_h/1.857,flag_w,flag_h/13);
-     ctx.fillStyle='rgb(255,255,255)';
   ctx.fillRect(0,flag_h/1.4444,flag_w,flag_h/13);
-       ctx.fillStyle='rgb(255,255,255)';
   ctx.fillRect(0,flag_h/1.1818,flag_w,flag_h/13);
   //星星
-  num b = flag_h/18;
+  num b = flag_h/18;//將藍色高分9等分
   ctx.font = "10px Arial";
   ctx.strokeStyle = 'rgb(255, 255, 255)';
   ctx.strokeText("✮      ✮      ✮      ✮      ✮      ✮", flag_w / 36,12);
