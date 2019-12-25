@@ -10,9 +10,12 @@
 <hr align="center" size="8px" width="100%"/>
 <p><img alt="" height="422" src="/images/21728701475789_100.jpg" width="311"/></p>
 <p></p>
-<p><canvas height="200" id="canvsa" widht="300">
-<script src="/downloads/dart_ex/roc_flag/rog_flag.js"></script>
-</canvas></p><h2>Dartpad</h2>
+<p><canvas height="200" id="canvas" width="300"></canvas></p>
+<script src="/downloads/dart_ex/roc_flag/roc_flag.js"></script>
+<h4>亂數分組:</h4>
+<p>學員名單 URL: <input id="studListUrl" size="50" type="text" value="https://mde.tw/cp2019/downloads/2019fall_cp_1b_list.txt"/><br/> 每組人數: <input id="grpNum" size="3" type="text" value="10"/><br/> <input id="submit" type="submit" value="開始分組"/><br/> <textarea cols="80" id="output" rows="10"></textarea></p>
+<script src="/downloads/dart_ex/ramdon/ramdon.js"></script>
+<h2>Dartpad</h2>
 <p><span style="color: #339966;">Hello World!:</span></p>
 <p><span style="vertical-align: inherit;"><span style="vertical-align: inherit;"><span style="color: #ff0000;">dartpad:</span><a href="https://dartpad.dartlang.org/?id=82be62c70020d1e99250b6fa8078ba36">https://dartpad.dartlang.org/?id=82be62c70020d1e99250b6fa8078ba36</a></span></span></p>
 <p><span style="vertical-align: inherit;"><span style="vertical-align: inherit;"><span style="color: #ff0000;">gist:</span><a href="https://gist.github.com/40823246/82be62c70020d1e99250b6fa8078ba36">https://gist.github.com/40823246/82be62c70020d1e99250b6fa8078ba36</a><a href="https://gist.github.com/40823246/82be62c70020d1e99250b6fa8078ba36"></a></span></span></p>
@@ -209,12 +212,14 @@ document.getElementById("iframe").height = 600 ;
 <h4>純 Dart 程式</h4>
 <p><button onclick="getDart('hello')">Hello</button> <button onclick="getDart('for')">For Loop</button> <button onclick="getDart('sum')">Sum</button> <button onclick="getDart('runge_kutta')">Runge-Kutta</button> <button onclick="getDart('rk_ex1')">RK ex1</button> <button onclick="getDart('mass_spring_damping')">Mass Spring Damping</button> <button onclick="getDart('function')">Function</button> <button onclick="getDart('fun_parameter')">Function Parameter</button> <button onclick="getDart('fat_arrow')">Fat Arrow</button> <button onclick="getDart('cf')">Temp</button> <button onclick="getDart('fortemp')">fortemp</button></p>
 <h4>Html 程式</h4>
-<p><button onclick="getHtmlDart('roc_flag')">ROC Flag</button> <button onclick="getHtmlDart('grid')">Grid</button> <button onclick="getHtmlDart('xyplot')">X-Y Plot</button> <button onclick="getHtmlDart('slithery')">Slithery</button></p>
+<p><button onclick="getHtmlDart('roc_flag')">ROC Flag</button> <button onclick="getHtmlDart('grid')">Grid</button> <button onclick="getHtmlDart('xyplot')">X-Y Plot</button> <button onclick="getHtmlDart('slithery')">Slithery</button><button onclick="getHtmlDart('ramdon')">亂數分組</button></p>
 <h4>Flutter 程式</h4>
 <p><button onclick="getFlutter('flutter1')">Flutter1</button> <button onclick="getFlutter('flutter2')">Flutter2</button> <button onclick="getFlutter('flutter3')">Flutter3</button></p>
-<!-- 內建放入的 Dart 原始碼 -->
+<p><!-- 內建放入的 Dart 原始碼 --></p>
 <p><button onclick="largest()">放大</button> <button onclick="original()">回復</button></p>
-<p><iframe height="600" id="iframe" src="https://dartpad.dartlang.org/embed-dart.html?gh_owner=40823246&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/mass_spring_damping&amp;theme=dark" width="800"></iframe></p><h1>Video</h1>
+<p><iframe height="600" id="iframe" src="https://dartpad.dartlang.org/embed-dart.html?gh_owner=40823246&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/mass_spring_damping&amp;theme=dark" width="800"></iframe></p>
+<h2>javascript</h2>
+<h1>Video</h1>
 <p><span style="color: #339966;">網站標題更改</span></p>
 <p><iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen" frameborder="0" height="315" src="https://www.youtube.com/embed/lFNHcfzAidg" width="560"></iframe></p>
 <hr align="center" size="8px" width="100%"/>
