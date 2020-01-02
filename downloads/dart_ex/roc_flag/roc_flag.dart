@@ -410,27 +410,3 @@ void drawCanada(ctx){
 void clearCanvas(){
   ctx.clearRect(0, 0, flag_w, flag_h);
 }
-//html
-<div id="wrapper">
-  <canvas id="canvas" width="300" height="200"></canvas>
-  <button id="button">Clear Canvas</button>
-  <button id="cuba">Draw Cuba</button>
-  <button id="china">Draw CHINA</button>
-  <button id="San">Draw SAN</button>
-  <button id="usa">Draw USA</button>
-  <button id="uk">Draw UK</button>
-  <button id="canada">Draw Canada</button>
-</div>
-//css
-html, body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-#wrapper {
-  width: 300px;
-  margin: auto;
-  border: solid thin black;
-}
