@@ -222,6 +222,39 @@
   var C = {},
   H = {JS_CONST: function JS_CONST() {
     },
+    IterableElementError_noElement: function() {
+      return new P.StateError("No element");
+    },
+    IterableElementError_tooMany: function() {
+      return new P.StateError("Too many elements");
+    },
+    EfficientLengthIterable: function EfficientLengthIterable() {
+    },
+    ListIterable: function ListIterable() {
+    },
+    ListIterator: function ListIterator(t0, t1, t2) {
+      var _ = this;
+      _.__internal$_iterable = t0;
+      _.__internal$_length = t1;
+      _.__internal$_index = 0;
+      _.__internal$_current = null;
+      _.$ti = t2;
+    },
+    MappedListIterable: function MappedListIterable(t0, t1, t2) {
+      this._source = t0;
+      this._f = t1;
+      this.$ti = t2;
+    },
+    WhereIterable: function WhereIterable(t0, t1, t2) {
+      this.__internal$_iterable = t0;
+      this._f = t1;
+      this.$ti = t2;
+    },
+    WhereIterator: function WhereIterator(t0, t1, t2) {
+      this._iterator = t0;
+      this._f = t1;
+      this.$ti = t2;
+    },
     unminifyOrTag: function(rawClassName) {
       var preserved = H.stringTypeCheck(init.mangledGlobalNames[rawClassName]);
       if (typeof preserved === "string")
@@ -230,6 +263,15 @@
     },
     getType: function(index) {
       return init.types[H.intTypeCheck(index)];
+    },
+    isJsIndexable: function(object, record) {
+      var result;
+      if (record != null) {
+        result = record.x;
+        if (result != null)
+          return result;
+      }
+      return !!J.getInterceptor$(object).$isJavaScriptIndexingBehavior;
     },
     S: function(value) {
       var res;
@@ -249,11 +291,17 @@
         throw H.wrapException(H.argumentErrorValue(value));
       return res;
     },
+    Primitives_objectHashCode: function(object) {
+      var hash = object.$identityHash;
+      if (hash == null) {
+        hash = Math.random() * 0x3fffffff | 0;
+        object.$identityHash = hash;
+      }
+      return hash;
+    },
     Primitives_parseInt: function(source, radix) {
-      var match, decimalMatch;
-      if (typeof source !== "string")
-        H.throwExpression(H.argumentErrorValue(source));
-      match = /^\s*[+-]?((0x[a-f0-9]+)|(\d+)|([a-z0-9]+))\s*$/i.exec(source);
+      var decimalMatch,
+        match = /^\s*[+-]?((0x[a-f0-9]+)|(\d+)|([a-z0-9]+))\s*$/i.exec(source);
       if (match == null)
         return;
       if (3 >= match.length)
@@ -269,14 +317,14 @@
       return H.Primitives__objectClassName(object) + H._joinArguments(H.getRuntimeTypeInfo(object), 0, null);
     },
     Primitives__objectClassName: function(object) {
-      var interceptorConstructorName, $name, t1, dispatchName, objectConstructor, match, decompiledName, endIndex, _null = null,
+      var interceptorConstructorName, $name, t1, dispatchName, objectConstructor, match, decompiledName,
         interceptor = J.getInterceptor$(object),
         interceptorConstructor = interceptor.constructor;
       if (typeof interceptorConstructor == "function") {
         interceptorConstructorName = interceptorConstructor.name;
-        $name = typeof interceptorConstructorName === "string" ? interceptorConstructorName : _null;
+        $name = typeof interceptorConstructorName === "string" ? interceptorConstructorName : null;
       } else
-        $name = _null;
+        $name = null;
       t1 = $name == null;
       if (t1 || interceptor === C.Interceptor_methods || !!interceptor.$isUnknownJavaScriptObject) {
         dispatchName = C.C_JS_CONST(object);
@@ -286,7 +334,7 @@
           objectConstructor = object.constructor;
           if (typeof objectConstructor == "function") {
             match = String(objectConstructor).match(/^\s*function\s*([\w$]*)\s*\(/);
-            decompiledName = match == null ? _null : match[1];
+            decompiledName = match == null ? null : match[1];
             if (typeof decompiledName === "string" && /^\w+$/.test(decompiledName))
               $name = decompiledName;
           }
@@ -294,48 +342,7 @@
         return $name;
       }
       $name = $name;
-      endIndex = $name.length;
-      if (endIndex > 1 && C.JSString_methods._codeUnitAt$1($name, 0) === 36) {
-        if (1 > endIndex)
-          H.throwExpression(P.RangeError$value(1, _null));
-        if (endIndex > endIndex)
-          H.throwExpression(P.RangeError$value(endIndex, _null));
-        $name = $name.substring(1, endIndex);
-      }
-      return H.unminifyOrTag($name);
-    },
-    Primitives_lazyAsJsDate: function(receiver) {
-      if (receiver.date === void 0)
-        receiver.date = new Date(receiver._value);
-      return receiver.date;
-    },
-    Primitives_getYear: function(receiver) {
-      var t1 = H.Primitives_lazyAsJsDate(receiver).getFullYear() + 0;
-      return t1;
-    },
-    Primitives_getMonth: function(receiver) {
-      var t1 = H.Primitives_lazyAsJsDate(receiver).getMonth() + 1;
-      return t1;
-    },
-    Primitives_getDay: function(receiver) {
-      var t1 = H.Primitives_lazyAsJsDate(receiver).getDate() + 0;
-      return t1;
-    },
-    Primitives_getHours: function(receiver) {
-      var t1 = H.Primitives_lazyAsJsDate(receiver).getHours() + 0;
-      return t1;
-    },
-    Primitives_getMinutes: function(receiver) {
-      var t1 = H.Primitives_lazyAsJsDate(receiver).getMinutes() + 0;
-      return t1;
-    },
-    Primitives_getSeconds: function(receiver) {
-      var t1 = H.Primitives_lazyAsJsDate(receiver).getSeconds() + 0;
-      return t1;
-    },
-    Primitives_getMilliseconds: function(receiver) {
-      var t1 = H.Primitives_lazyAsJsDate(receiver).getMilliseconds() + 0;
-      return t1;
+      return H.unminifyOrTag($name.length > 1 && C.JSString_methods._codeUnitAt$1($name, 0) === 36 ? C.JSString_methods.substring$1($name, 1) : $name);
     },
     iae: function(argument) {
       throw H.wrapException(H.argumentErrorValue(argument));
@@ -346,21 +353,18 @@
       throw H.wrapException(H.diagnoseIndexError(receiver, index));
     },
     diagnoseIndexError: function(indexable, index) {
-      var t1, $length, t2, _s5_ = "index";
+      var $length, t1, _s5_ = "index";
       if (typeof index !== "number" || Math.floor(index) !== index)
         return new P.ArgumentError(true, index, _s5_, null);
-      t1 = J.getInterceptor$asx(indexable);
-      $length = H.intTypeCheck(t1.get$length(indexable));
+      $length = H.intTypeCheck(J.get$length$asx(indexable));
       if (!(index < 0)) {
         if (typeof $length !== "number")
           return H.iae($length);
-        t2 = index >= $length;
+        t1 = index >= $length;
       } else
-        t2 = true;
-      if (t2) {
-        t1 = H.intTypeCheck($length == null ? t1.get$length(indexable) : $length);
-        return new P.IndexError(t1, true, index, _s5_, "Index out of range");
-      }
+        t1 = true;
+      if (t1)
+        return P.IndexError$(index, indexable, _s5_, null, $length);
       return P.RangeError$value(index, _s5_);
     },
     argumentErrorValue: function(object) {
@@ -386,7 +390,7 @@
       throw H.wrapException(ex);
     },
     throwConcurrentModificationError: function(collection) {
-      throw H.wrapException(new P.ConcurrentModificationError(collection));
+      throw H.wrapException(P.ConcurrentModificationError$(collection));
     },
     TypeErrorDecoder_extractPattern: function(message) {
       var match, $arguments, argumentsExpr, expr, method, receiver;
@@ -861,6 +865,17 @@
         return value;
       throw H.wrapException(H.TypeErrorImplementation$(value, "List<dynamic>"));
     },
+    listSuperNativeTypeCheck: function(value, property) {
+      var t1;
+      if (value == null)
+        return value;
+      t1 = J.getInterceptor$(value);
+      if (!!t1.$isList)
+        return value;
+      if (t1[property])
+        return value;
+      H.propertyTypeError(value, property);
+    },
     extractFunctionTypeObjectFromInternal: function(o) {
       var signature;
       if ("$signature" in o) {
@@ -937,6 +952,20 @@
     },
     getRuntimeTypeArguments: function(interceptor, object, substitutionName) {
       return H.substitute(interceptor["$as" + H.S(substitutionName)], H.getRuntimeTypeInfo(object));
+    },
+    getRuntimeTypeArgumentIntercepted: function(interceptor, target, substitutionName, index) {
+      var $arguments;
+      H.stringTypeCheck(substitutionName);
+      H.intTypeCheck(index);
+      $arguments = H.substitute(interceptor["$as" + H.S(substitutionName)], H.getRuntimeTypeInfo(target));
+      return $arguments == null ? null : $arguments[index];
+    },
+    getRuntimeTypeArgument: function(target, substitutionName, index) {
+      var $arguments;
+      H.stringTypeCheck(substitutionName);
+      H.intTypeCheck(index);
+      $arguments = H.substitute(target["$as" + H.S(substitutionName)], H.getRuntimeTypeInfo(target));
+      return $arguments == null ? null : $arguments[index];
     },
     getTypeArgumentByIndex: function(target, index) {
       var rti;
@@ -1457,6 +1486,30 @@
     _AssertionError: function _AssertionError(t0) {
       this.message = t0;
     },
+    JsLinkedHashMap: function JsLinkedHashMap(t0) {
+      var _ = this;
+      _.__js_helper$_length = 0;
+      _.__js_helper$_last = _.__js_helper$_first = _.__js_helper$_rest = _.__js_helper$_nums = _.__js_helper$_strings = null;
+      _.__js_helper$_modifications = 0;
+      _.$ti = t0;
+    },
+    LinkedHashMapCell: function LinkedHashMapCell(t0, t1) {
+      var _ = this;
+      _.hashMapCellKey = t0;
+      _.hashMapCellValue = t1;
+      _._previous = _.__js_helper$_next = null;
+    },
+    LinkedHashMapKeyIterable: function LinkedHashMapKeyIterable(t0, t1) {
+      this._map = t0;
+      this.$ti = t1;
+    },
+    LinkedHashMapKeyIterator: function LinkedHashMapKeyIterator(t0, t1, t2) {
+      var _ = this;
+      _._map = t0;
+      _.__js_helper$_modifications = t1;
+      _.__js_helper$_current = _.__js_helper$_cell = null;
+      _.$ti = t2;
+    },
     initHooks_closure: function initHooks_closure(t0) {
       this.getTag = t0;
     },
@@ -1467,7 +1520,7 @@
       this.prototypeForTag = t0;
     },
     extractKeys: function(victim) {
-      return J.JSArray_markFixedList(H.setRuntimeTypeInfo(victim ? Object.keys(victim) : [], [null]));
+      return J.JSArray_JSArray$markFixed(victim ? Object.keys(victim) : [], null);
     }
   },
   J = {
@@ -1514,6 +1567,9 @@
       }
       return C.UnknownJavaScriptObject_methods;
     },
+    JSArray_JSArray$markFixed: function(allocation, $E) {
+      return J.JSArray_markFixedList(H.setRuntimeTypeInfo(allocation, [$E]));
+    },
     JSArray_markFixedList: function(list) {
       H.listTypeCheck(list);
       list.fixed$length = Array;
@@ -1558,6 +1614,29 @@
         return receiver;
       return J.getNativeInterceptor(receiver);
     },
+    getInterceptor$ax: function(receiver) {
+      if (receiver == null)
+        return receiver;
+      if (receiver.constructor == Array)
+        return J.JSArray.prototype;
+      if (typeof receiver != "object") {
+        if (typeof receiver == "function")
+          return J.JavaScriptFunction.prototype;
+        return receiver;
+      }
+      if (receiver instanceof P.Object)
+        return receiver;
+      return J.getNativeInterceptor(receiver);
+    },
+    getInterceptor$s: function(receiver) {
+      if (typeof receiver == "string")
+        return J.JSString.prototype;
+      if (receiver == null)
+        return receiver;
+      if (!(receiver instanceof P.Object))
+        return J.UnknownJavaScriptObject.prototype;
+      return receiver;
+    },
     getInterceptor$x: function(receiver) {
       if (receiver == null)
         return receiver;
@@ -1570,14 +1649,49 @@
         return receiver;
       return J.getNativeInterceptor(receiver);
     },
+    get$attributes$x: function(receiver) {
+      return J.getInterceptor$x(receiver).get$attributes(receiver);
+    },
+    get$hashCode$: function(receiver) {
+      return J.getInterceptor$(receiver).get$hashCode(receiver);
+    },
+    get$iterator$ax: function(receiver) {
+      return J.getInterceptor$ax(receiver).get$iterator(receiver);
+    },
     get$length$asx: function(receiver) {
       return J.getInterceptor$asx(receiver).get$length(receiver);
     },
     get$onClick$x: function(receiver) {
       return J.getInterceptor$x(receiver).get$onClick(receiver);
     },
+    $eq$: function(receiver, a0) {
+      if (receiver == null)
+        return a0 == null;
+      if (typeof receiver != "object")
+        return a0 != null && receiver === a0;
+      return J.getInterceptor$(receiver).$eq(receiver, a0);
+    },
+    $index$asx: function(receiver, a0) {
+      if (typeof a0 === "number")
+        if (receiver.constructor == Array || typeof receiver == "string" || H.isJsIndexable(receiver, receiver[init.dispatchPropertyName]))
+          if (a0 >>> 0 === a0 && a0 < receiver.length)
+            return receiver[a0];
+      return J.getInterceptor$asx(receiver).$index(receiver, a0);
+    },
     _addEventListener$3$x: function(receiver, a0, a1, a2) {
       return J.getInterceptor$x(receiver)._addEventListener$3(receiver, a0, a1, a2);
+    },
+    elementAt$1$ax: function(receiver, a0) {
+      return J.getInterceptor$ax(receiver).elementAt$1(receiver, a0);
+    },
+    remove$0$x: function(receiver) {
+      return J.getInterceptor$x(receiver).remove$0(receiver);
+    },
+    substring$2$s: function(receiver, a0, a1) {
+      return J.getInterceptor$s(receiver).substring$2(receiver, a0, a1);
+    },
+    toLowerCase$0$s: function(receiver) {
+      return J.getInterceptor$s(receiver).toLowerCase$0(receiver);
     },
     toString$0$: function(receiver) {
       return J.getInterceptor$(receiver).toString$0(receiver);
@@ -2028,6 +2142,205 @@
       this.f = t1;
       this.T = t2;
     },
+    LinkedHashMap_LinkedHashMap$_empty: function($K, $V) {
+      return new H.JsLinkedHashMap([$K, $V]);
+    },
+    LinkedHashSet_LinkedHashSet: function($E) {
+      return new P._LinkedHashSet([$E]);
+    },
+    _LinkedHashSet__newHashTable: function() {
+      var table = Object.create(null);
+      table["<non-identifier-key>"] = table;
+      delete table["<non-identifier-key>"];
+      return table;
+    },
+    IterableBase_iterableToShortString: function(iterable, leftDelimiter, rightDelimiter) {
+      var parts, t1;
+      if (P._isToStringVisiting(iterable)) {
+        if (leftDelimiter === "(" && rightDelimiter === ")")
+          return "(...)";
+        return leftDelimiter + "..." + rightDelimiter;
+      }
+      parts = H.setRuntimeTypeInfo([], [P.String]);
+      C.JSArray_methods.add$1($._toStringVisiting, iterable);
+      try {
+        P._iterablePartsToStrings(iterable, parts);
+      } finally {
+        if (0 >= $._toStringVisiting.length)
+          return H.ioore($._toStringVisiting, -1);
+        $._toStringVisiting.pop();
+      }
+      t1 = P.StringBuffer__writeAll(leftDelimiter, H.listSuperNativeTypeCheck(parts, "$isIterable"), ", ") + rightDelimiter;
+      return t1.charCodeAt(0) == 0 ? t1 : t1;
+    },
+    IterableBase_iterableToFullString: function(iterable, leftDelimiter, rightDelimiter) {
+      var buffer, t1;
+      if (P._isToStringVisiting(iterable))
+        return leftDelimiter + "..." + rightDelimiter;
+      buffer = new P.StringBuffer(leftDelimiter);
+      C.JSArray_methods.add$1($._toStringVisiting, iterable);
+      try {
+        t1 = buffer;
+        t1._contents = P.StringBuffer__writeAll(t1._contents, iterable, ", ");
+      } finally {
+        if (0 >= $._toStringVisiting.length)
+          return H.ioore($._toStringVisiting, -1);
+        $._toStringVisiting.pop();
+      }
+      buffer._contents += rightDelimiter;
+      t1 = buffer._contents;
+      return t1.charCodeAt(0) == 0 ? t1 : t1;
+    },
+    _isToStringVisiting: function(o) {
+      var t1, i;
+      for (t1 = $._toStringVisiting.length, i = 0; i < t1; ++i)
+        if (o === $._toStringVisiting[i])
+          return true;
+      return false;
+    },
+    _iterablePartsToStrings: function(iterable, parts) {
+      var it, $length, count, next, ultimateString, penultimateString, penultimate, ultimate, ultimate0, elision;
+      H.assertSubtype(parts, "$isList", [P.String], "$asList");
+      it = iterable.get$iterator(iterable);
+      $length = 0;
+      count = 0;
+      while (true) {
+        if (!($length < 80 || count < 3))
+          break;
+        if (!it.moveNext$0())
+          return;
+        next = H.S(it.get$current());
+        C.JSArray_methods.add$1(parts, next);
+        $length += next.length + 2;
+        ++count;
+      }
+      if (!it.moveNext$0()) {
+        if (count <= 5)
+          return;
+        if (0 >= parts.length)
+          return H.ioore(parts, -1);
+        ultimateString = parts.pop();
+        if (0 >= parts.length)
+          return H.ioore(parts, -1);
+        penultimateString = parts.pop();
+      } else {
+        penultimate = it.get$current();
+        ++count;
+        if (!it.moveNext$0()) {
+          if (count <= 4) {
+            C.JSArray_methods.add$1(parts, H.S(penultimate));
+            return;
+          }
+          ultimateString = H.S(penultimate);
+          if (0 >= parts.length)
+            return H.ioore(parts, -1);
+          penultimateString = parts.pop();
+          $length += ultimateString.length + 2;
+        } else {
+          ultimate = it.get$current();
+          ++count;
+          for (; it.moveNext$0(); penultimate = ultimate, ultimate = ultimate0) {
+            ultimate0 = it.get$current();
+            ++count;
+            if (count > 100) {
+              while (true) {
+                if (!($length > 75 && count > 3))
+                  break;
+                if (0 >= parts.length)
+                  return H.ioore(parts, -1);
+                $length -= parts.pop().length + 2;
+                --count;
+              }
+              C.JSArray_methods.add$1(parts, "...");
+              return;
+            }
+          }
+          penultimateString = H.S(penultimate);
+          ultimateString = H.S(ultimate);
+          $length += ultimateString.length + penultimateString.length + 4;
+        }
+      }
+      if (count > parts.length + 2) {
+        $length += 5;
+        elision = "...";
+      } else
+        elision = null;
+      while (true) {
+        if (!($length > 80 && parts.length > 3))
+          break;
+        if (0 >= parts.length)
+          return H.ioore(parts, -1);
+        $length -= parts.pop().length + 2;
+        if (elision == null) {
+          $length += 5;
+          elision = "...";
+        }
+      }
+      if (elision != null)
+        C.JSArray_methods.add$1(parts, elision);
+      C.JSArray_methods.add$1(parts, penultimateString);
+      C.JSArray_methods.add$1(parts, ultimateString);
+    },
+    LinkedHashSet_LinkedHashSet$from: function(elements, $E) {
+      var t1, _i,
+        result = P.LinkedHashSet_LinkedHashSet($E);
+      for (t1 = elements.length, _i = 0; _i < elements.length; elements.length === t1 || (0, H.throwConcurrentModificationError)(elements), ++_i)
+        result.add$1(0, H.assertSubtypeOfRuntimeType(elements[_i], $E));
+      return result;
+    },
+    MapBase_mapToString: function(m) {
+      var result, t1 = {};
+      if (P._isToStringVisiting(m))
+        return "{...}";
+      result = new P.StringBuffer("");
+      try {
+        C.JSArray_methods.add$1($._toStringVisiting, m);
+        result._contents += "{";
+        t1.first = true;
+        m.forEach$1(0, new P.MapBase_mapToString_closure(t1, result));
+        result._contents += "}";
+      } finally {
+        if (0 >= $._toStringVisiting.length)
+          return H.ioore($._toStringVisiting, -1);
+        $._toStringVisiting.pop();
+      }
+      t1 = result._contents;
+      return t1.charCodeAt(0) == 0 ? t1 : t1;
+    },
+    _LinkedHashSet: function _LinkedHashSet(t0) {
+      var _ = this;
+      _._collection$_length = 0;
+      _._last = _._first = _._rest = _._nums = _._strings = null;
+      _._modifications = 0;
+      _.$ti = t0;
+    },
+    _LinkedHashSetCell: function _LinkedHashSetCell(t0) {
+      this._element = t0;
+      this._next = null;
+    },
+    _LinkedHashSetIterator: function _LinkedHashSetIterator(t0, t1, t2) {
+      var _ = this;
+      _._set = t0;
+      _._modifications = t1;
+      _._collection$_current = _._cell = null;
+      _.$ti = t2;
+    },
+    ListBase: function ListBase() {
+    },
+    ListMixin: function ListMixin() {
+    },
+    MapBase: function MapBase() {
+    },
+    MapBase_mapToString_closure: function MapBase_mapToString_closure(t0, t1) {
+      this._box_0 = t0;
+      this.result = t1;
+    },
+    MapMixin: function MapMixin() {
+    },
+    _SetBase: function _SetBase() {
+    },
+    _ListBase_Object_ListMixin: function _ListBase_Object_ListMixin() {
+    },
     int_parse: function(source) {
       var value = H.Primitives_parseInt(source, null);
       if (value != null)
@@ -2040,42 +2353,19 @@
       return "Instance of '" + H.Primitives_objectTypeName(object) + "'";
     },
     StringBuffer__writeAll: function(string, objects, separator) {
-      var iterator = new J.ArrayIterator(objects, objects.length, [H.getTypeArgumentByIndex(objects, 0)]);
+      var iterator = J.get$iterator$ax(objects);
       if (!iterator.moveNext$0())
         return string;
       if (separator.length === 0) {
         do
-          string += H.S(iterator._current);
+          string += H.S(iterator.get$current());
         while (iterator.moveNext$0());
       } else {
-        string += H.S(iterator._current);
+        string += H.S(iterator.get$current());
         for (; iterator.moveNext$0();)
-          string = string + separator + H.S(iterator._current);
+          string = string + separator + H.S(iterator.get$current());
       }
       return string;
-    },
-    DateTime__fourDigits: function(n) {
-      var absN = Math.abs(n),
-        sign = n < 0 ? "-" : "";
-      if (absN >= 1000)
-        return "" + n;
-      if (absN >= 100)
-        return sign + "0" + absN;
-      if (absN >= 10)
-        return sign + "00" + absN;
-      return sign + "000" + absN;
-    },
-    DateTime__threeDigits: function(n) {
-      if (n >= 100)
-        return "" + n;
-      if (n >= 10)
-        return "0" + n;
-      return "00" + n;
-    },
-    DateTime__twoDigits: function(n) {
-      if (n >= 10)
-        return "" + n;
-      return "0" + n;
     },
     Error_safeToString: function(object) {
       if (typeof object === "number" || typeof object === "boolean" || null == object)
@@ -2087,12 +2377,15 @@
     ArgumentError$value: function(value, $name, message) {
       return new P.ArgumentError(true, value, $name, message);
     },
-    RangeError$: function(message) {
-      var _null = null;
-      return new P.RangeError(_null, _null, false, _null, _null, message);
-    },
     RangeError$value: function(value, $name) {
       return new P.RangeError(null, null, true, value, $name, "Value not in range");
+    },
+    RangeError$range: function(invalidValue, minValue, maxValue, $name, message) {
+      return new P.RangeError(minValue, maxValue, true, invalidValue, $name, "Invalid value");
+    },
+    IndexError$: function(invalidValue, indexable, $name, message, $length) {
+      var t1 = H.intTypeCheck($length == null ? J.get$length$asx(indexable) : $length);
+      return new P.IndexError(t1, true, invalidValue, $name, "Index out of range");
     },
     UnsupportedError$: function(message) {
       return new P.UnsupportedError(message);
@@ -2100,11 +2393,13 @@
     UnimplementedError$: function(message) {
       return new P.UnimplementedError(message);
     },
-    bool: function bool() {
+    StateError$: function(message) {
+      return new P.StateError(message);
     },
-    DateTime: function DateTime(t0, t1) {
-      this._value = t0;
-      this.isUtc = t1;
+    ConcurrentModificationError$: function(modifiedObject) {
+      return new P.ConcurrentModificationError(modifiedObject);
+    },
+    bool: function bool() {
     },
     double: function double() {
     },
@@ -2144,6 +2439,9 @@
     UnimplementedError: function UnimplementedError(t0) {
       this.message = t0;
     },
+    StateError: function StateError(t0) {
+      this.message = t0;
+    },
     ConcurrentModificationError: function ConcurrentModificationError(t0) {
       this.modifiedObject = t0;
     },
@@ -2158,7 +2456,13 @@
     FormatException: function FormatException(t0) {
       this.message = t0;
     },
+    Function: function Function() {
+    },
     int: function int() {
+    },
+    Iterable: function Iterable() {
+    },
+    Iterator: function Iterator() {
     },
     List: function List() {
     },
@@ -2175,43 +2479,40 @@
     StringBuffer: function StringBuffer(t0) {
       this._contents = t0;
     },
-    _Random$: function(seed) {
-      var t1 = new P._Random();
-      t1._Random$1(seed);
-      return t1;
-    },
-    _Random: function _Random() {
-      this._hi = this._lo = 0;
+    ScriptElement: function ScriptElement() {
     },
     SvgElement: function SvgElement() {
-    },
-    IterableBase_iterableToFullString: function(iterable, leftDelimiter, rightDelimiter) {
-      var buffer, t1;
-      if (P._isToStringVisiting(iterable))
-        return leftDelimiter + "..." + rightDelimiter;
-      buffer = new P.StringBuffer(leftDelimiter);
-      C.JSArray_methods.add$1($._toStringVisiting, iterable);
-      try {
-        t1 = buffer;
-        t1._contents = P.StringBuffer__writeAll(t1._contents, iterable, ", ");
-      } finally {
-        if (0 >= $._toStringVisiting.length)
-          return H.ioore($._toStringVisiting, -1);
-        $._toStringVisiting.pop();
-      }
-      buffer._contents += rightDelimiter;
-      t1 = buffer._contents;
-      return t1.charCodeAt(0) == 0 ? t1 : t1;
-    },
-    _isToStringVisiting: function(o) {
-      var t1, i;
-      for (t1 = $._toStringVisiting.length, i = 0; i < t1; ++i)
-        if (o === $._toStringVisiting[i])
-          return true;
-      return false;
     }
   },
   W = {
+    Element_Element$html: function(html, treeSanitizer, validator) {
+      var it, result,
+        t1 = document.body,
+        fragment = (t1 && C.BodyElement_methods).createFragment$3$treeSanitizer$validator(t1, html, treeSanitizer, validator);
+      fragment.toString;
+      t1 = W.Node;
+      t1 = new H.WhereIterable(new W._ChildNodeListLazy(fragment), H.functionTypeCheck(new W.Element_Element$html_closure(), {func: 1, ret: P.bool, args: [t1]}), [t1]);
+      it = t1.get$iterator(t1);
+      if (!it.moveNext$0())
+        H.throwExpression(H.IterableElementError_noElement());
+      result = it.get$current();
+      if (it.moveNext$0())
+        H.throwExpression(H.IterableElementError_tooMany());
+      return H.interceptedTypeCheck(result, "$isElement");
+    },
+    Element__safeTagName: function(element) {
+      var t1, t2, exception,
+        result = "element tag unavailable";
+      try {
+        t1 = J.getInterceptor$x(element);
+        t2 = t1.get$tagName(element);
+        if (typeof t2 === "string")
+          result = t1.get$tagName(element);
+      } catch (exception) {
+        H.unwrapException(exception);
+      }
+      return result;
+    },
     _EventStreamSubscription$: function(_target, _eventType, onData, _useCapture, $T) {
       var t1 = W._wrapZone(new W._EventStreamSubscription_closure(onData), W.Event),
         t2 = t1 != null;
@@ -2221,6 +2522,53 @@
           J._addEventListener$3$x(_target, _eventType, t1, false);
       }
       return new W._EventStreamSubscription(_target, _eventType, t1, false, [$T]);
+    },
+    _Html5NodeValidator$: function(uriPolicy) {
+      var e = document.createElement("a"),
+        t1 = new W._SameOriginUriPolicy(e, window.location);
+      t1 = new W._Html5NodeValidator(t1);
+      t1._Html5NodeValidator$1$uriPolicy(uriPolicy);
+      return t1;
+    },
+    _Html5NodeValidator__standardAttributeValidator: function(element, attributeName, value, context) {
+      H.interceptedTypeCheck(element, "$isElement");
+      H.stringTypeCheck(attributeName);
+      H.stringTypeCheck(value);
+      H.interceptedTypeCheck(context, "$is_Html5NodeValidator");
+      return true;
+    },
+    _Html5NodeValidator__uriAttributeValidator: function(element, attributeName, value, context) {
+      var t1, t2, t3;
+      H.interceptedTypeCheck(element, "$isElement");
+      H.stringTypeCheck(attributeName);
+      H.stringTypeCheck(value);
+      t1 = H.interceptedTypeCheck(context, "$is_Html5NodeValidator").uriPolicy;
+      t2 = t1._hiddenAnchor;
+      t2.href = value;
+      t3 = t2.hostname;
+      t1 = t1._loc;
+      if (!(t3 == t1.hostname && t2.port == t1.port && t2.protocol == t1.protocol))
+        if (t3 === "")
+          if (t2.port === "") {
+            t1 = t2.protocol;
+            t1 = t1 === ":" || t1 === "";
+          } else
+            t1 = false;
+        else
+          t1 = false;
+      else
+        t1 = true;
+      return t1;
+    },
+    _TemplatingNodeValidator$: function() {
+      var t1 = P.String,
+        t2 = P.LinkedHashSet_LinkedHashSet$from(C.List_wSV, t1),
+        t3 = H.getTypeArgumentByIndex(C.List_wSV, 0),
+        t4 = H.functionTypeCheck(new W._TemplatingNodeValidator_closure(), {func: 1, ret: t1, args: [t3]}),
+        t5 = H.setRuntimeTypeInfo(["TEMPLATE"], [t1]);
+      t2 = new W._TemplatingNodeValidator(t2, P.LinkedHashSet_LinkedHashSet(t1), P.LinkedHashSet_LinkedHashSet(t1), P.LinkedHashSet_LinkedHashSet(t1), null);
+      t2._SimpleNodeValidator$4$allowedAttributes$allowedElements$allowedUriAttributes(null, new H.MappedListIterable(C.List_wSV, t4, [t3, t1]), t5, null);
+      return t2;
     },
     _wrapZone: function(callback, $T) {
       var t1;
@@ -2236,11 +2584,17 @@
     },
     AreaElement: function AreaElement() {
     },
-    DivElement: function DivElement() {
+    BaseElement: function BaseElement() {
+    },
+    BodyElement: function BodyElement() {
+    },
+    CharacterData: function CharacterData() {
     },
     DomException: function DomException() {
     },
     Element: function Element() {
+    },
+    Element_Element$html_closure: function Element_Element$html_closure() {
     },
     Event: function Event() {
     },
@@ -2250,13 +2604,39 @@
     },
     InputElement: function InputElement() {
     },
+    LabelElement: function LabelElement() {
+    },
+    Location: function Location() {
+    },
     MouseEvent: function MouseEvent() {
+    },
+    _ChildNodeListLazy: function _ChildNodeListLazy(t0) {
+      this._this = t0;
     },
     Node: function Node() {
     },
+    NodeList: function NodeList() {
+    },
     SelectElement: function SelectElement() {
     },
+    TableElement: function TableElement() {
+    },
+    TableRowElement: function TableRowElement() {
+    },
+    TableSectionElement: function TableSectionElement() {
+    },
+    TemplateElement: function TemplateElement() {
+    },
     UIEvent: function UIEvent() {
+    },
+    _Attr: function _Attr() {
+    },
+    _NamedNodeMap: function _NamedNodeMap() {
+    },
+    _AttributeMap: function _AttributeMap() {
+    },
+    _ElementAttributeMap: function _ElementAttributeMap(t0) {
+      this._html$_element = t0;
     },
     _EventStream: function _EventStream() {
     },
@@ -2277,58 +2657,94 @@
     },
     _EventStreamSubscription_closure: function _EventStreamSubscription_closure(t0) {
       this.onData = t0;
+    },
+    _Html5NodeValidator: function _Html5NodeValidator(t0) {
+      this.uriPolicy = t0;
+    },
+    ImmutableListMixin: function ImmutableListMixin() {
+    },
+    NodeValidatorBuilder: function NodeValidatorBuilder(t0) {
+      this._validators = t0;
+    },
+    NodeValidatorBuilder_allowsElement_closure: function NodeValidatorBuilder_allowsElement_closure(t0) {
+      this.element = t0;
+    },
+    NodeValidatorBuilder_allowsAttribute_closure: function NodeValidatorBuilder_allowsAttribute_closure(t0, t1, t2) {
+      this.element = t0;
+      this.attributeName = t1;
+      this.value = t2;
+    },
+    _SimpleNodeValidator: function _SimpleNodeValidator() {
+    },
+    _SimpleNodeValidator_closure: function _SimpleNodeValidator_closure() {
+    },
+    _SimpleNodeValidator_closure0: function _SimpleNodeValidator_closure0() {
+    },
+    _TemplatingNodeValidator: function _TemplatingNodeValidator(t0, t1, t2, t3, t4) {
+      var _ = this;
+      _._templateAttrs = t0;
+      _.allowedElements = t1;
+      _.allowedAttributes = t2;
+      _.allowedUriAttributes = t3;
+      _.uriPolicy = t4;
+    },
+    _TemplatingNodeValidator_closure: function _TemplatingNodeValidator_closure() {
+    },
+    _SvgNodeValidator: function _SvgNodeValidator() {
+    },
+    FixedSizeListIterator: function FixedSizeListIterator(t0, t1, t2) {
+      var _ = this;
+      _._array = t0;
+      _._html$_length = t1;
+      _._position = -1;
+      _._html$_current = null;
+      _.$ti = t2;
+    },
+    NodeValidator: function NodeValidator() {
+    },
+    _SameOriginUriPolicy: function _SameOriginUriPolicy(t0, t1) {
+      this._hiddenAnchor = t0;
+      this._loc = t1;
+    },
+    _ValidatingTreeSanitizer: function _ValidatingTreeSanitizer(t0) {
+      this.validator = t0;
+    },
+    _ValidatingTreeSanitizer_sanitizeTree_walk: function _ValidatingTreeSanitizer_sanitizeTree_walk(t0) {
+      this.$this = t0;
+    },
+    _NodeList_Interceptor_ListMixin: function _NodeList_Interceptor_ListMixin() {
+    },
+    _NodeList_Interceptor_ListMixin_ImmutableListMixin: function _NodeList_Interceptor_ListMixin_ImmutableListMixin() {
+    },
+    __NamedNodeMap_Interceptor_ListMixin: function __NamedNodeMap_Interceptor_ListMixin() {
+    },
+    __NamedNodeMap_Interceptor_ListMixin_ImmutableListMixin: function __NamedNodeMap_Interceptor_ListMixin_ImmutableListMixin() {
     }
   },
-  U = {
+  L = {
     main: function() {
-      var t1, t2;
-      $.answer = 1 + $.$get$rand().nextInt$1(99);
-      t1 = document;
-      $.input = H.interceptedTypeCheck(t1.querySelector("#input"), "$isInputElement");
-      $.output = H.interceptedTypeCheck(t1.querySelector("#output"), "$isDivElement");
+      var t2,
+        t1 = document,
+        tempInput = H.interceptedTypeCheck(t1.querySelector("#weight"), "$isInputElement");
       t1 = J.get$onClick$x(t1.querySelector("#submit"));
       t2 = H.getTypeArgumentByIndex(t1, 0);
-      W._EventStreamSubscription$(t1._target, t1._eventType, H.functionTypeCheck(U.web_guessing__writeoutput$closure(), {func: 1, ret: -1, args: [t2]}), false, t2);
+      W._EventStreamSubscription$(t1._target, t1._eventType, H.functionTypeCheck(new L.main_closure(tempInput), {func: 1, ret: -1, args: [t2]}), false, t2);
     },
-    writeoutput: function(e) {
-      var t3, t4,
-        t1 = $.answer,
-        t2 = P.int_parse($.input.value);
-      if (typeof t1 !== "number")
-        return t1.$gt();
-      if (typeof t2 !== "number")
-        return H.iae(t2);
-      if (t1 > t2) {
-        $.output.textContent = C.JSString_methods.$add("\u731c\u7b2c " + $.guessNum + " \u6b21: \u731c\u7684\u6578\u5b57\u70ba:", $.input.value) + ", \u592a\u5c0f!";
-        $.input.value = "";
-        $.guessNum = $.guessNum + 1;
-      } else {
-        t1 = $.answer;
-        t2 = P.int_parse($.input.value);
-        if (typeof t1 !== "number")
-          return t1.$lt();
-        if (typeof t2 !== "number")
-          return H.iae(t2);
-        t3 = $.output;
-        t4 = $.guessNum;
-        if (t1 < t2) {
-          t3.textContent = C.JSString_methods.$add("\u731c\u7b2c " + t4 + " \u6b21: \u731c\u7684\u6578\u5b57\u70ba:", $.input.value) + ", \u592a\u5927!";
-          $.input.value = "";
-          $.guessNum = $.guessNum + 1;
-        } else {
-          t3.textContent = C.JSString_methods.$add("\u731c\u7b2c " + t4 + " \u6b21: \u731c\u7684\u6578\u5b57\u70ba:", $.input.value) + ", \u731c\u5c0d\u4e86, \u91cd\u65b0\u7e7c\u7e8c\u731c!";
-          $.input.value = "";
-          $.answer = $.$get$rand().nextInt$1(100);
-          $.guessNum = 1;
-        }
-      }
+    main_closure: function main_closure(t0) {
+      this.tempInput = t0;
     }
   };
-  var holders = [C, H, J, P, W, U];
+  var holders = [C, H, J, P, W, L];
   hunkHelpers.setFunctionNamesIfNecessary(holders);
   var $ = {};
   H.JS_CONST.prototype = {};
   J.Interceptor.prototype = {
+    $eq: function(receiver, other) {
+      return receiver === other;
+    },
+    get$hashCode: function(receiver) {
+      return H.Primitives_objectHashCode(receiver);
+    },
     toString$0: function(receiver) {
       return "Instance of '" + H.Primitives_objectTypeName(receiver) + "'";
     }
@@ -2337,14 +2753,26 @@
     toString$0: function(receiver) {
       return String(receiver);
     },
+    get$hashCode: function(receiver) {
+      return receiver ? 519018 : 218159;
+    },
     $isbool: 1
   };
   J.JSNull.prototype = {
+    $eq: function(receiver, other) {
+      return null == other;
+    },
     toString$0: function(receiver) {
       return "null";
+    },
+    get$hashCode: function(receiver) {
+      return 0;
     }
   };
   J.JavaScriptObject.prototype = {
+    get$hashCode: function(receiver) {
+      return 0;
+    },
     toString$0: function(receiver) {
       return String(receiver);
     }
@@ -2370,8 +2798,38 @@
         H.throwExpression(P.UnsupportedError$("add"));
       receiver.push(value);
     },
+    elementAt$1: function(receiver, index) {
+      if (index >= receiver.length)
+        return H.ioore(receiver, index);
+      return receiver[index];
+    },
+    any$1: function(receiver, test) {
+      var end, i;
+      H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [H.getTypeArgumentByIndex(receiver, 0)]});
+      end = receiver.length;
+      for (i = 0; i < end; ++i) {
+        if (H.boolConversionCheck(test.call$1(receiver[i])))
+          return true;
+        if (receiver.length !== end)
+          throw H.wrapException(P.ConcurrentModificationError$(receiver));
+      }
+      return false;
+    },
+    contains$1: function(receiver, other) {
+      var i;
+      for (i = 0; i < receiver.length; ++i)
+        if (J.$eq$(receiver[i], other))
+          return true;
+      return false;
+    },
     toString$0: function(receiver) {
       return P.IterableBase_iterableToFullString(receiver, "[", "]");
+    },
+    get$iterator: function(receiver) {
+      return new J.ArrayIterator(receiver, receiver.length, [H.getTypeArgumentByIndex(receiver, 0)]);
+    },
+    get$hashCode: function(receiver) {
+      return H.Primitives_objectHashCode(receiver);
     },
     get$length: function(receiver) {
       return receiver.length;
@@ -2381,6 +2839,9 @@
   };
   J.JSUnmodifiableArray.prototype = {};
   J.ArrayIterator.prototype = {
+    get$current: function() {
+      return this._current;
+    },
     moveNext$0: function() {
       var t2, _this = this,
         t1 = _this._iterable,
@@ -2398,28 +2859,39 @@
     },
     set$_current: function(_current) {
       this._current = H.assertSubtypeOfRuntimeType(_current, H.getTypeArgumentByIndex(this, 0));
-    }
+    },
+    $isIterator: 1
   };
   J.JSNumber.prototype = {
+    toStringAsFixed$1: function(receiver, fractionDigits) {
+      var result, t1;
+      if (fractionDigits > 20)
+        throw H.wrapException(P.RangeError$range(fractionDigits, 0, 20, "fractionDigits", null));
+      result = receiver.toFixed(fractionDigits);
+      if (receiver === 0)
+        t1 = 1 / receiver < 0;
+      else
+        t1 = false;
+      if (t1)
+        return "-" + result;
+      return result;
+    },
     toString$0: function(receiver) {
       if (receiver === 0 && 1 / receiver < 0)
         return "-0.0";
       else
         return "" + receiver;
     },
-    _tdivFast$1: function(receiver, other) {
-      return (receiver | 0) === receiver ? receiver / other | 0 : this._tdivSlow$1(receiver, other);
-    },
-    _tdivSlow$1: function(receiver, other) {
-      var quotient = receiver / other;
-      if (quotient >= -2147483648 && quotient <= 2147483647)
-        return quotient | 0;
-      if (quotient > 0) {
-        if (quotient !== 1 / 0)
-          return Math.floor(quotient);
-      } else if (quotient > -1 / 0)
-        return Math.ceil(quotient);
-      throw H.wrapException(P.UnsupportedError$("Result of truncating division is " + H.S(quotient) + ": " + H.S(receiver) + " ~/ " + other));
+    get$hashCode: function(receiver) {
+      var absolute, floorLog2, factor, scaled,
+        intValue = receiver | 0;
+      if (receiver === intValue)
+        return 536870911 & intValue;
+      absolute = Math.abs(receiver);
+      floorLog2 = Math.log(absolute) / 0.6931471805599453 | 0;
+      factor = Math.pow(2, floorLog2);
+      scaled = absolute < 1 ? absolute / factor : factor / absolute;
+      return 536870911 & ((scaled * 9007199254740992 | 0) + (scaled * 3542243181176521 | 0)) * 599197 + floorLog2 * 1259;
     },
     _shrOtherPositive$1: function(receiver, other) {
       var t1;
@@ -2449,13 +2921,112 @@
         throw H.wrapException(P.ArgumentError$value(other, null, null));
       return receiver + other;
     },
+    startsWith$1: function(receiver, pattern) {
+      var otherLength = pattern.length;
+      if (otherLength > receiver.length)
+        return false;
+      return pattern === receiver.substring(0, otherLength);
+    },
+    substring$2: function(receiver, startIndex, endIndex) {
+      if (endIndex == null)
+        endIndex = receiver.length;
+      if (startIndex > endIndex)
+        throw H.wrapException(P.RangeError$value(startIndex, null));
+      if (endIndex > receiver.length)
+        throw H.wrapException(P.RangeError$value(endIndex, null));
+      return receiver.substring(startIndex, endIndex);
+    },
+    substring$1: function($receiver, startIndex) {
+      return this.substring$2($receiver, startIndex, null);
+    },
+    toLowerCase$0: function(receiver) {
+      return receiver.toLowerCase();
+    },
     toString$0: function(receiver) {
       return receiver;
+    },
+    get$hashCode: function(receiver) {
+      var t1, hash, i;
+      for (t1 = receiver.length, hash = 0, i = 0; i < t1; ++i) {
+        hash = 536870911 & hash + receiver.charCodeAt(i);
+        hash = 536870911 & hash + ((524287 & hash) << 10);
+        hash ^= hash >> 6;
+      }
+      hash = 536870911 & hash + ((67108863 & hash) << 3);
+      hash ^= hash >> 11;
+      return 536870911 & hash + ((16383 & hash) << 15);
     },
     get$length: function(receiver) {
       return receiver.length;
     },
+    $isPattern: 1,
     $isString: 1
+  };
+  H.EfficientLengthIterable.prototype = {};
+  H.ListIterable.prototype = {
+    get$iterator: function(_) {
+      var _this = this;
+      return new H.ListIterator(_this, _this.get$length(_this), [H.getRuntimeTypeArgument(_this, "ListIterable", 0)]);
+    },
+    where$1: function(_, test) {
+      return this.super$Iterable$where(0, H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [H.getRuntimeTypeArgument(this, "ListIterable", 0)]}));
+    }
+  };
+  H.ListIterator.prototype = {
+    get$current: function() {
+      return this.__internal$_current;
+    },
+    moveNext$0: function() {
+      var t3, _this = this,
+        t1 = _this.__internal$_iterable,
+        t2 = J.getInterceptor$asx(t1),
+        $length = t2.get$length(t1);
+      if (_this.__internal$_length !== $length)
+        throw H.wrapException(P.ConcurrentModificationError$(t1));
+      t3 = _this.__internal$_index;
+      if (t3 >= $length) {
+        _this.set$__internal$_current(null);
+        return false;
+      }
+      _this.set$__internal$_current(t2.elementAt$1(t1, t3));
+      ++_this.__internal$_index;
+      return true;
+    },
+    set$__internal$_current: function(_current) {
+      this.__internal$_current = H.assertSubtypeOfRuntimeType(_current, H.getTypeArgumentByIndex(this, 0));
+    },
+    $isIterator: 1
+  };
+  H.MappedListIterable.prototype = {
+    get$length: function(_) {
+      return J.get$length$asx(this._source);
+    },
+    elementAt$1: function(_, index) {
+      return this._f.call$1(J.elementAt$1$ax(this._source, index));
+    },
+    $asListIterable: function($S, $T) {
+      return [$T];
+    },
+    $asIterable: function($S, $T) {
+      return [$T];
+    }
+  };
+  H.WhereIterable.prototype = {
+    get$iterator: function(_) {
+      return new H.WhereIterator(J.get$iterator$ax(this.__internal$_iterable), this._f, this.$ti);
+    }
+  };
+  H.WhereIterator.prototype = {
+    moveNext$0: function() {
+      var t1, t2;
+      for (t1 = this._iterator, t2 = this._f; t1.moveNext$0();)
+        if (H.boolConversionCheck(t2.call$1(t1.get$current())))
+          return true;
+      return false;
+    },
+    get$current: function() {
+      return this._iterator.get$current();
+    }
   };
   H.TypeErrorDecoder.prototype = {
     matchTypeError$1: function(message) {
@@ -2552,6 +3123,25 @@
     }
   };
   H.BoundClosure.prototype = {
+    $eq: function(_, other) {
+      var _this = this;
+      if (other == null)
+        return false;
+      if (_this === other)
+        return true;
+      if (!(other instanceof H.BoundClosure))
+        return false;
+      return _this._self === other._self && _this.__js_helper$_target === other.__js_helper$_target && _this._receiver === other._receiver;
+    },
+    get$hashCode: function(_) {
+      var receiverHashCode,
+        t1 = this._receiver;
+      if (t1 == null)
+        receiverHashCode = H.Primitives_objectHashCode(this._self);
+      else
+        receiverHashCode = typeof t1 !== "object" ? J.get$hashCode$(t1) : H.Primitives_objectHashCode(t1);
+      return (receiverHashCode ^ H.Primitives_objectHashCode(this.__js_helper$_target)) >>> 0;
+    },
     toString$0: function(_) {
       var receiver = this._receiver;
       if (receiver == null)
@@ -2574,6 +3164,180 @@
       return "Assertion failed: " + P.Error_safeToString(this.message);
     }
   };
+  H.JsLinkedHashMap.prototype = {
+    get$length: function(_) {
+      return this.__js_helper$_length;
+    },
+    get$keys: function() {
+      return new H.LinkedHashMapKeyIterable(this, [H.getTypeArgumentByIndex(this, 0)]);
+    },
+    $index: function(_, key) {
+      var strings, cell, t1, nums, _this = this;
+      if (typeof key === "string") {
+        strings = _this.__js_helper$_strings;
+        if (strings == null)
+          return;
+        cell = _this._getTableCell$2(strings, key);
+        t1 = cell == null ? null : cell.hashMapCellValue;
+        return t1;
+      } else if (typeof key === "number" && (key & 0x3ffffff) === key) {
+        nums = _this.__js_helper$_nums;
+        if (nums == null)
+          return;
+        cell = _this._getTableCell$2(nums, key);
+        t1 = cell == null ? null : cell.hashMapCellValue;
+        return t1;
+      } else
+        return _this.internalGet$1(key);
+    },
+    internalGet$1: function(key) {
+      var bucket, index,
+        rest = this.__js_helper$_rest;
+      if (rest == null)
+        return;
+      bucket = this._getTableBucket$2(rest, J.get$hashCode$(key) & 0x3ffffff);
+      index = this.internalFindBucketIndex$2(bucket, key);
+      if (index < 0)
+        return;
+      return bucket[index].hashMapCellValue;
+    },
+    $indexSet: function(_, key, value) {
+      var strings, nums, rest, hash, bucket, index, _this = this;
+      H.assertSubtypeOfRuntimeType(key, H.getTypeArgumentByIndex(_this, 0));
+      H.assertSubtypeOfRuntimeType(value, H.getTypeArgumentByIndex(_this, 1));
+      if (typeof key === "string") {
+        strings = _this.__js_helper$_strings;
+        _this.__js_helper$_addHashTableEntry$3(strings == null ? _this.__js_helper$_strings = _this._newHashTable$0() : strings, key, value);
+      } else if (typeof key === "number" && (key & 0x3ffffff) === key) {
+        nums = _this.__js_helper$_nums;
+        _this.__js_helper$_addHashTableEntry$3(nums == null ? _this.__js_helper$_nums = _this._newHashTable$0() : nums, key, value);
+      } else {
+        rest = _this.__js_helper$_rest;
+        if (rest == null)
+          rest = _this.__js_helper$_rest = _this._newHashTable$0();
+        hash = J.get$hashCode$(key) & 0x3ffffff;
+        bucket = _this._getTableBucket$2(rest, hash);
+        if (bucket == null)
+          _this._setTableEntry$3(rest, hash, [_this.__js_helper$_newLinkedCell$2(key, value)]);
+        else {
+          index = _this.internalFindBucketIndex$2(bucket, key);
+          if (index >= 0)
+            bucket[index].hashMapCellValue = value;
+          else
+            bucket.push(_this.__js_helper$_newLinkedCell$2(key, value));
+        }
+      }
+    },
+    forEach$1: function(_, action) {
+      var cell, modifications, _this = this;
+      H.functionTypeCheck(action, {func: 1, ret: -1, args: [H.getTypeArgumentByIndex(_this, 0), H.getTypeArgumentByIndex(_this, 1)]});
+      cell = _this.__js_helper$_first;
+      modifications = _this.__js_helper$_modifications;
+      for (; cell != null;) {
+        action.call$2(cell.hashMapCellKey, cell.hashMapCellValue);
+        if (modifications !== _this.__js_helper$_modifications)
+          throw H.wrapException(P.ConcurrentModificationError$(_this));
+        cell = cell.__js_helper$_next;
+      }
+    },
+    __js_helper$_addHashTableEntry$3: function(table, key, value) {
+      var cell, _this = this;
+      H.assertSubtypeOfRuntimeType(key, H.getTypeArgumentByIndex(_this, 0));
+      H.assertSubtypeOfRuntimeType(value, H.getTypeArgumentByIndex(_this, 1));
+      cell = _this._getTableCell$2(table, key);
+      if (cell == null)
+        _this._setTableEntry$3(table, key, _this.__js_helper$_newLinkedCell$2(key, value));
+      else
+        cell.hashMapCellValue = value;
+    },
+    _modified$0: function() {
+      this.__js_helper$_modifications = this.__js_helper$_modifications + 1 & 67108863;
+    },
+    __js_helper$_newLinkedCell$2: function(key, value) {
+      var last, _this = this,
+        cell = new H.LinkedHashMapCell(H.assertSubtypeOfRuntimeType(key, H.getTypeArgumentByIndex(_this, 0)), H.assertSubtypeOfRuntimeType(value, H.getTypeArgumentByIndex(_this, 1)));
+      if (_this.__js_helper$_first == null)
+        _this.__js_helper$_first = _this.__js_helper$_last = cell;
+      else {
+        last = _this.__js_helper$_last;
+        cell._previous = last;
+        _this.__js_helper$_last = last.__js_helper$_next = cell;
+      }
+      ++_this.__js_helper$_length;
+      _this._modified$0();
+      return cell;
+    },
+    internalFindBucketIndex$2: function(bucket, key) {
+      var $length, i;
+      if (bucket == null)
+        return -1;
+      $length = bucket.length;
+      for (i = 0; i < $length; ++i)
+        if (J.$eq$(bucket[i].hashMapCellKey, key))
+          return i;
+      return -1;
+    },
+    toString$0: function(_) {
+      return P.MapBase_mapToString(this);
+    },
+    _getTableCell$2: function(table, key) {
+      return table[key];
+    },
+    _getTableBucket$2: function(table, key) {
+      return table[key];
+    },
+    _setTableEntry$3: function(table, key, value) {
+      table[key] = value;
+    },
+    _deleteTableEntry$2: function(table, key) {
+      delete table[key];
+    },
+    _newHashTable$0: function() {
+      var _s20_ = "<non-identifier-key>",
+        table = Object.create(null);
+      this._setTableEntry$3(table, _s20_, table);
+      this._deleteTableEntry$2(table, _s20_);
+      return table;
+    }
+  };
+  H.LinkedHashMapCell.prototype = {};
+  H.LinkedHashMapKeyIterable.prototype = {
+    get$length: function(_) {
+      return this._map.__js_helper$_length;
+    },
+    get$iterator: function(_) {
+      var t1 = this._map,
+        t2 = new H.LinkedHashMapKeyIterator(t1, t1.__js_helper$_modifications, this.$ti);
+      t2.__js_helper$_cell = t1.__js_helper$_first;
+      return t2;
+    }
+  };
+  H.LinkedHashMapKeyIterator.prototype = {
+    get$current: function() {
+      return this.__js_helper$_current;
+    },
+    moveNext$0: function() {
+      var _this = this,
+        t1 = _this._map;
+      if (_this.__js_helper$_modifications !== t1.__js_helper$_modifications)
+        throw H.wrapException(P.ConcurrentModificationError$(t1));
+      else {
+        t1 = _this.__js_helper$_cell;
+        if (t1 == null) {
+          _this.set$__js_helper$_current(null);
+          return false;
+        } else {
+          _this.set$__js_helper$_current(t1.hashMapCellKey);
+          _this.__js_helper$_cell = _this.__js_helper$_cell.__js_helper$_next;
+          return true;
+        }
+      }
+    },
+    set$__js_helper$_current: function(_current) {
+      this.__js_helper$_current = H.assertSubtypeOfRuntimeType(_current, H.getTypeArgumentByIndex(this, 0));
+    },
+    $isIterator: 1
+  };
   H.initHooks_closure.prototype = {
     call$1: function(o) {
       return this.getTag(o);
@@ -2584,13 +3348,13 @@
     call$2: function(o, tag) {
       return this.getUnknownTag(o, tag);
     },
-    $signature: 5
+    $signature: 8
   };
   H.initHooks_closure1.prototype = {
     call$1: function(tag) {
       return this.prototypeForTag(H.stringTypeCheck(tag));
     },
-    $signature: 6
+    $signature: 9
   };
   P._AsyncRun__initializeScheduleImmediate_internalCallback.prototype = {
     call$1: function(_) {
@@ -2609,7 +3373,7 @@
       t2 = this.span;
       t1.firstChild ? t1.removeChild(t2) : t1.appendChild(t2);
     },
-    $signature: 7
+    $signature: 10
   };
   P._AsyncRun__scheduleImmediateJsOverride_internalCallback.prototype = {
     call$0: function() {
@@ -2797,7 +3561,7 @@
     call$1: function(error) {
       return this.call$2(error, null);
     },
-    $signature: 8
+    $signature: 11
   };
   P._Future__chainForeignFuture_closure1.prototype = {
     call$0: function() {
@@ -2850,7 +3614,7 @@
     call$1: function(_) {
       return this.originalSource;
     },
-    $signature: 9
+    $signature: 12
   };
   P._Future__propagateToListeners_handleValueCallback.prototype = {
     call$0: function() {
@@ -3035,21 +3799,180 @@
       return {func: 1, ret: -1, args: [this.T]};
     }
   };
-  P.bool.prototype = {};
-  P.DateTime.prototype = {
-    toString$0: function(_) {
+  P._LinkedHashSet.prototype = {
+    get$iterator: function(_) {
       var _this = this,
-        y = P.DateTime__fourDigits(H.Primitives_getYear(_this)),
-        m = P.DateTime__twoDigits(H.Primitives_getMonth(_this)),
-        d = P.DateTime__twoDigits(H.Primitives_getDay(_this)),
-        h = P.DateTime__twoDigits(H.Primitives_getHours(_this)),
-        min = P.DateTime__twoDigits(H.Primitives_getMinutes(_this)),
-        sec = P.DateTime__twoDigits(H.Primitives_getSeconds(_this)),
-        ms = P.DateTime__threeDigits(H.Primitives_getMilliseconds(_this)),
-        t1 = y + "-" + m + "-" + d + " " + h + ":" + min + ":" + sec + "." + ms;
+        t1 = new P._LinkedHashSetIterator(_this, _this._modifications, _this.$ti);
+      t1._cell = _this._first;
       return t1;
+    },
+    get$length: function(_) {
+      return this._collection$_length;
+    },
+    contains$1: function(_, object) {
+      var strings, t1;
+      if (typeof object === "string" && object !== "__proto__") {
+        strings = this._strings;
+        if (strings == null)
+          return false;
+        return H.interceptedTypeCheck(strings[object], "$is_LinkedHashSetCell") != null;
+      } else {
+        t1 = this._contains$1(object);
+        return t1;
+      }
+    },
+    _contains$1: function(object) {
+      var rest = this._rest;
+      if (rest == null)
+        return false;
+      return this._findBucketIndex$2(rest[this._computeHashCode$1(object)], object) >= 0;
+    },
+    add$1: function(_, element) {
+      var strings, nums, _this = this;
+      H.assertSubtypeOfRuntimeType(element, H.getTypeArgumentByIndex(_this, 0));
+      if (typeof element === "string" && element !== "__proto__") {
+        strings = _this._strings;
+        return _this._addHashTableEntry$2(strings == null ? _this._strings = P._LinkedHashSet__newHashTable() : strings, element);
+      } else if (typeof element === "number" && (element & 1073741823) === element) {
+        nums = _this._nums;
+        return _this._addHashTableEntry$2(nums == null ? _this._nums = P._LinkedHashSet__newHashTable() : nums, element);
+      } else
+        return _this._add$1(element);
+    },
+    _add$1: function(element) {
+      var rest, hash, bucket, _this = this;
+      H.assertSubtypeOfRuntimeType(element, H.getTypeArgumentByIndex(_this, 0));
+      rest = _this._rest;
+      if (rest == null)
+        rest = _this._rest = P._LinkedHashSet__newHashTable();
+      hash = _this._computeHashCode$1(element);
+      bucket = rest[hash];
+      if (bucket == null)
+        rest[hash] = [_this._newLinkedCell$1(element)];
+      else {
+        if (_this._findBucketIndex$2(bucket, element) >= 0)
+          return false;
+        bucket.push(_this._newLinkedCell$1(element));
+      }
+      return true;
+    },
+    _addHashTableEntry$2: function(table, element) {
+      H.assertSubtypeOfRuntimeType(element, H.getTypeArgumentByIndex(this, 0));
+      if (H.interceptedTypeCheck(table[element], "$is_LinkedHashSetCell") != null)
+        return false;
+      table[element] = this._newLinkedCell$1(element);
+      return true;
+    },
+    _newLinkedCell$1: function(element) {
+      var _this = this,
+        cell = new P._LinkedHashSetCell(H.assertSubtypeOfRuntimeType(element, H.getTypeArgumentByIndex(_this, 0)));
+      if (_this._first == null)
+        _this._first = _this._last = cell;
+      else
+        _this._last = _this._last._next = cell;
+      ++_this._collection$_length;
+      _this._modifications = 1073741823 & _this._modifications + 1;
+      return cell;
+    },
+    _computeHashCode$1: function(element) {
+      return J.get$hashCode$(element) & 1073741823;
+    },
+    _findBucketIndex$2: function(bucket, element) {
+      var $length, i;
+      if (bucket == null)
+        return -1;
+      $length = bucket.length;
+      for (i = 0; i < $length; ++i)
+        if (J.$eq$(bucket[i]._element, element))
+          return i;
+      return -1;
     }
   };
+  P._LinkedHashSetCell.prototype = {};
+  P._LinkedHashSetIterator.prototype = {
+    get$current: function() {
+      return this._collection$_current;
+    },
+    moveNext$0: function() {
+      var _this = this,
+        t1 = _this._set;
+      if (_this._modifications !== t1._modifications)
+        throw H.wrapException(P.ConcurrentModificationError$(t1));
+      else {
+        t1 = _this._cell;
+        if (t1 == null) {
+          _this.set$_collection$_current(null);
+          return false;
+        } else {
+          _this.set$_collection$_current(H.assertSubtypeOfRuntimeType(t1._element, H.getTypeArgumentByIndex(_this, 0)));
+          _this._cell = _this._cell._next;
+          return true;
+        }
+      }
+    },
+    set$_collection$_current: function(_current) {
+      this._collection$_current = H.assertSubtypeOfRuntimeType(_current, H.getTypeArgumentByIndex(this, 0));
+    },
+    $isIterator: 1
+  };
+  P.ListBase.prototype = {$isIterable: 1, $isList: 1};
+  P.ListMixin.prototype = {
+    get$iterator: function(receiver) {
+      return new H.ListIterator(receiver, this.get$length(receiver), [H.getRuntimeTypeArgumentIntercepted(this, receiver, "ListMixin", 0)]);
+    },
+    elementAt$1: function(receiver, index) {
+      return this.$index(receiver, index);
+    },
+    toString$0: function(receiver) {
+      return P.IterableBase_iterableToFullString(receiver, "[", "]");
+    }
+  };
+  P.MapBase.prototype = {};
+  P.MapBase_mapToString_closure.prototype = {
+    call$2: function(k, v) {
+      var t2,
+        t1 = this._box_0;
+      if (!t1.first)
+        this.result._contents += ", ";
+      t1.first = false;
+      t1 = this.result;
+      t2 = t1._contents += H.S(k);
+      t1._contents = t2 + ": ";
+      t1._contents += H.S(v);
+    },
+    $signature: 13
+  };
+  P.MapMixin.prototype = {
+    forEach$1: function(_, action) {
+      var t1, key, _this = this;
+      H.functionTypeCheck(action, {func: 1, ret: -1, args: [H.getRuntimeTypeArgument(_this, "MapMixin", 0), H.getRuntimeTypeArgument(_this, "MapMixin", 1)]});
+      for (t1 = J.get$iterator$ax(_this.get$keys()); t1.moveNext$0();) {
+        key = t1.get$current();
+        action.call$2(key, _this.$index(0, key));
+      }
+    },
+    get$length: function(_) {
+      return J.get$length$asx(this.get$keys());
+    },
+    toString$0: function(_) {
+      return P.MapBase_mapToString(this);
+    },
+    $isMap: 1
+  };
+  P._SetBase.prototype = {
+    addAll$1: function(_, elements) {
+      var t1;
+      for (t1 = J.get$iterator$ax(H.assertSubtype(elements, "$isIterable", this.$ti, "$asIterable")); t1.moveNext$0();)
+        this.add$1(0, t1.get$current());
+    },
+    toString$0: function(_) {
+      return P.IterableBase_iterableToFullString(this, "{", "}");
+    },
+    $isIterable: 1,
+    $isSet: 1
+  };
+  P._ListBase_Object_ListMixin.prototype = {};
+  P.bool.prototype = {};
   P.double.prototype = {};
   P.Error.prototype = {};
   P.AssertionError.prototype = {
@@ -3136,6 +4059,11 @@
       return t1 != null ? "UnimplementedError: " + t1 : "UnimplementedError";
     }
   };
+  P.StateError.prototype = {
+    toString$0: function(_) {
+      return "Bad state: " + this.message;
+    }
+  };
   P.ConcurrentModificationError.prototype = {
     toString$0: function(_) {
       var t1 = this.modifiedObject;
@@ -3164,19 +4092,46 @@
   P.FormatException.prototype = {
     toString$0: function(_) {
       var t1 = this.message,
-        report = t1 != null && "" !== t1 ? "FormatException: " + H.S(t1) : "FormatException";
+        report = "" !== t1 ? "FormatException: " + t1 : "FormatException";
       return report;
     }
   };
+  P.Function.prototype = {};
   P.int.prototype = {};
+  P.Iterable.prototype = {
+    where$1: function(_, test) {
+      var t1 = H.getRuntimeTypeArgument(this, "Iterable", 0);
+      return new H.WhereIterable(this, H.functionTypeCheck(test, {func: 1, ret: P.bool, args: [t1]}), [t1]);
+    },
+    get$length: function(_) {
+      var count,
+        it = this.get$iterator(this);
+      for (count = 0; it.moveNext$0();)
+        ++count;
+      return count;
+    },
+    toString$0: function(_) {
+      return P.IterableBase_iterableToShortString(this, "(", ")");
+    }
+  };
+  P.Iterator.prototype = {};
   P.List.prototype = {$isIterable: 1};
   P.Null.prototype = {
+    get$hashCode: function(_) {
+      return P.Object.prototype.get$hashCode.call(this, this);
+    },
     toString$0: function(_) {
       return "null";
     }
   };
   P.num.prototype = {};
   P.Object.prototype = {constructor: P.Object, $isObject: 1,
+    $eq: function(_, other) {
+      return this === other;
+    },
+    get$hashCode: function(_) {
+      return H.Primitives_objectHashCode(this);
+    },
     toString$0: function(_) {
       return "Instance of '" + H.Primitives_objectTypeName(this) + "'";
     },
@@ -3185,7 +4140,7 @@
     }
   };
   P.StackTrace.prototype = {};
-  P.String.prototype = {};
+  P.String.prototype = {$isPattern: 1};
   P.StringBuffer.prototype = {
     get$length: function(_) {
       return this._contents.length;
@@ -3199,27 +4154,114 @@
   W.AnchorElement.prototype = {
     toString$0: function(receiver) {
       return String(receiver);
-    }
+    },
+    $isAnchorElement: 1
   };
   W.AreaElement.prototype = {
     toString$0: function(receiver) {
       return String(receiver);
     }
   };
-  W.DivElement.prototype = {$isDivElement: 1};
+  W.BaseElement.prototype = {$isBaseElement: 1};
+  W.BodyElement.prototype = {$isBodyElement: 1};
+  W.CharacterData.prototype = {
+    get$length: function(receiver) {
+      return receiver.length;
+    }
+  };
   W.DomException.prototype = {
     toString$0: function(receiver) {
       return String(receiver);
     }
   };
   W.Element.prototype = {
+    get$attributes: function(receiver) {
+      return new W._ElementAttributeMap(receiver);
+    },
     toString$0: function(receiver) {
       return receiver.localName;
+    },
+    createFragment$3$treeSanitizer$validator: function(receiver, html, treeSanitizer, validator) {
+      var t1, t2, contextElement, fragment;
+      if (treeSanitizer == null) {
+        t1 = $.Element__defaultValidator;
+        if (t1 == null) {
+          t1 = H.setRuntimeTypeInfo([], [W.NodeValidator]);
+          t2 = new W.NodeValidatorBuilder(t1);
+          C.JSArray_methods.add$1(t1, W._Html5NodeValidator$(null));
+          C.JSArray_methods.add$1(t1, W._TemplatingNodeValidator$());
+          $.Element__defaultValidator = t2;
+          validator = t2;
+        } else
+          validator = t1;
+        t1 = $.Element__defaultSanitizer;
+        if (t1 == null) {
+          t1 = new W._ValidatingTreeSanitizer(validator);
+          $.Element__defaultSanitizer = t1;
+          treeSanitizer = t1;
+        } else {
+          t1.validator = validator;
+          treeSanitizer = t1;
+        }
+      }
+      if ($.Element__parseDocument == null) {
+        t1 = document;
+        t2 = t1.implementation.createHTMLDocument("");
+        $.Element__parseDocument = t2;
+        $.Element__parseRange = t2.createRange();
+        t2 = $.Element__parseDocument.createElement("base");
+        H.interceptedTypeCheck(t2, "$isBaseElement");
+        t2.href = t1.baseURI;
+        $.Element__parseDocument.head.appendChild(t2);
+      }
+      t1 = $.Element__parseDocument;
+      if (t1.body == null) {
+        t2 = t1.createElement("body");
+        t1.body = H.interceptedTypeCheck(t2, "$isBodyElement");
+      }
+      t1 = $.Element__parseDocument;
+      if (!!this.$isBodyElement)
+        contextElement = t1.body;
+      else {
+        contextElement = t1.createElement(receiver.tagName);
+        $.Element__parseDocument.body.appendChild(contextElement);
+      }
+      if ("createContextualFragment" in window.Range.prototype && !C.JSArray_methods.contains$1(C.List_ego, receiver.tagName)) {
+        $.Element__parseRange.selectNodeContents(contextElement);
+        fragment = $.Element__parseRange.createContextualFragment(html);
+      } else {
+        contextElement.innerHTML = html;
+        fragment = $.Element__parseDocument.createDocumentFragment();
+        for (; t1 = contextElement.firstChild, t1 != null;)
+          fragment.appendChild(t1);
+      }
+      t1 = $.Element__parseDocument.body;
+      if (contextElement == null ? t1 != null : contextElement !== t1)
+        J.remove$0$x(contextElement);
+      treeSanitizer.sanitizeTree$1(fragment);
+      document.adoptNode(fragment);
+      return fragment;
+    },
+    createFragment$2$treeSanitizer: function($receiver, html, treeSanitizer) {
+      return this.createFragment$3$treeSanitizer$validator($receiver, html, treeSanitizer, null);
+    },
+    setInnerHtml$1: function(receiver, html) {
+      receiver.textContent = null;
+      receiver.appendChild(this.createFragment$3$treeSanitizer$validator(receiver, html, null, null));
     },
     get$onClick: function(receiver) {
       return new W._ElementEventStreamImpl(receiver, "click", false, [W.MouseEvent]);
     },
-    $isElement: 1
+    $isElement: 1,
+    get$tagName: function(receiver) {
+      return receiver.tagName;
+    }
+  };
+  W.Element_Element$html_closure.prototype = {
+    call$1: function(e) {
+      return !!J.getInterceptor$(H.interceptedTypeCheck(e, "$isNode")).$isElement;
+    },
+    $signature: 14
   };
   W.Event.prototype = {$isEvent: 1};
   W.EventTarget.prototype = {
@@ -3234,11 +4276,100 @@
     }
   };
   W.InputElement.prototype = {$isInputElement: 1};
+  W.LabelElement.prototype = {$isLabelElement: 1};
+  W.Location.prototype = {
+    toString$0: function(receiver) {
+      return String(receiver);
+    },
+    $isLocation: 1
+  };
   W.MouseEvent.prototype = {$isMouseEvent: 1};
+  W._ChildNodeListLazy.prototype = {
+    get$single: function(_) {
+      var t1 = this._this,
+        l = t1.childNodes.length;
+      if (l === 0)
+        throw H.wrapException(P.StateError$("No elements"));
+      if (l > 1)
+        throw H.wrapException(P.StateError$("More than one element"));
+      return t1.firstChild;
+    },
+    addAll$1: function(_, iterable) {
+      var t1, t2, len, i;
+      H.assertSubtype(iterable, "$isIterable", [W.Node], "$asIterable");
+      t1 = iterable._this;
+      t2 = this._this;
+      if (t1 !== t2)
+        for (len = t1.childNodes.length, i = 0; i < len; ++i)
+          t2.appendChild(t1.firstChild);
+      return;
+    },
+    get$iterator: function(_) {
+      var t1 = this._this.childNodes;
+      return new W.FixedSizeListIterator(t1, t1.length, [H.getRuntimeTypeArgumentIntercepted(C.NodeList_methods, t1, "ImmutableListMixin", 0)]);
+    },
+    get$length: function(_) {
+      return this._this.childNodes.length;
+    },
+    $index: function(_, index) {
+      var t1 = this._this.childNodes;
+      if (index < 0 || index >= t1.length)
+        return H.ioore(t1, index);
+      return t1[index];
+    },
+    $asListMixin: function() {
+      return [W.Node];
+    },
+    $asIterable: function() {
+      return [W.Node];
+    },
+    $asList: function() {
+      return [W.Node];
+    }
+  };
   W.Node.prototype = {
+    remove$0: function(receiver) {
+      var t1 = receiver.parentNode;
+      if (t1 != null)
+        t1.removeChild(receiver);
+    },
     toString$0: function(receiver) {
       var value = receiver.nodeValue;
       return value == null ? this.super$Interceptor$toString(receiver) : value;
+    },
+    $isNode: 1
+  };
+  W.NodeList.prototype = {
+    get$length: function(receiver) {
+      return receiver.length;
+    },
+    $index: function(receiver, index) {
+      if (index >>> 0 !== index || index >= receiver.length)
+        throw H.wrapException(P.IndexError$(index, receiver, null, null, null));
+      return receiver[index];
+    },
+    elementAt$1: function(receiver, index) {
+      if (index >= receiver.length)
+        return H.ioore(receiver, index);
+      return receiver[index];
+    },
+    $isJavaScriptIndexingBehavior: 1,
+    $asJavaScriptIndexingBehavior: function() {
+      return [W.Node];
+    },
+    $asListMixin: function() {
+      return [W.Node];
+    },
+    $isIterable: 1,
+    $asIterable: function() {
+      return [W.Node];
+    },
+    $isList: 1,
+    $asList: function() {
+      return [W.Node];
+    },
+    $asImmutableListMixin: function() {
+      return [W.Node];
     }
   };
   W.SelectElement.prototype = {
@@ -3246,7 +4377,129 @@
       return receiver.length;
     }
   };
+  W.TableElement.prototype = {
+    createFragment$3$treeSanitizer$validator: function(receiver, html, treeSanitizer, validator) {
+      var table, fragment;
+      if ("createContextualFragment" in window.Range.prototype)
+        return this.super$Element$createFragment(receiver, html, treeSanitizer, validator);
+      table = W.Element_Element$html("<table>" + html + "</table>", treeSanitizer, validator);
+      fragment = document.createDocumentFragment();
+      fragment.toString;
+      table.toString;
+      new W._ChildNodeListLazy(fragment).addAll$1(0, new W._ChildNodeListLazy(table));
+      return fragment;
+    }
+  };
+  W.TableRowElement.prototype = {
+    createFragment$3$treeSanitizer$validator: function(receiver, html, treeSanitizer, validator) {
+      var t1, fragment, section, row;
+      if ("createContextualFragment" in window.Range.prototype)
+        return this.super$Element$createFragment(receiver, html, treeSanitizer, validator);
+      t1 = document;
+      fragment = t1.createDocumentFragment();
+      t1 = C.TableElement_methods.createFragment$3$treeSanitizer$validator(t1.createElement("table"), html, treeSanitizer, validator);
+      t1.toString;
+      t1 = new W._ChildNodeListLazy(t1);
+      section = t1.get$single(t1);
+      section.toString;
+      t1 = new W._ChildNodeListLazy(section);
+      row = t1.get$single(t1);
+      fragment.toString;
+      row.toString;
+      new W._ChildNodeListLazy(fragment).addAll$1(0, new W._ChildNodeListLazy(row));
+      return fragment;
+    }
+  };
+  W.TableSectionElement.prototype = {
+    createFragment$3$treeSanitizer$validator: function(receiver, html, treeSanitizer, validator) {
+      var t1, fragment, section;
+      if ("createContextualFragment" in window.Range.prototype)
+        return this.super$Element$createFragment(receiver, html, treeSanitizer, validator);
+      t1 = document;
+      fragment = t1.createDocumentFragment();
+      t1 = C.TableElement_methods.createFragment$3$treeSanitizer$validator(t1.createElement("table"), html, treeSanitizer, validator);
+      t1.toString;
+      t1 = new W._ChildNodeListLazy(t1);
+      section = t1.get$single(t1);
+      fragment.toString;
+      section.toString;
+      new W._ChildNodeListLazy(fragment).addAll$1(0, new W._ChildNodeListLazy(section));
+      return fragment;
+    }
+  };
+  W.TemplateElement.prototype = {$isTemplateElement: 1};
   W.UIEvent.prototype = {};
+  W._Attr.prototype = {$is_Attr: 1};
+  W._NamedNodeMap.prototype = {
+    get$length: function(receiver) {
+      return receiver.length;
+    },
+    $index: function(receiver, index) {
+      if (index >>> 0 !== index || index >= receiver.length)
+        throw H.wrapException(P.IndexError$(index, receiver, null, null, null));
+      return receiver[index];
+    },
+    elementAt$1: function(receiver, index) {
+      if (index >= receiver.length)
+        return H.ioore(receiver, index);
+      return receiver[index];
+    },
+    $isJavaScriptIndexingBehavior: 1,
+    $asJavaScriptIndexingBehavior: function() {
+      return [W.Node];
+    },
+    $asListMixin: function() {
+      return [W.Node];
+    },
+    $isIterable: 1,
+    $asIterable: function() {
+      return [W.Node];
+    },
+    $isList: 1,
+    $asList: function() {
+      return [W.Node];
+    },
+    $asImmutableListMixin: function() {
+      return [W.Node];
+    }
+  };
+  W._AttributeMap.prototype = {
+    forEach$1: function(_, f) {
+      var t1, t2, t3, _i, key;
+      H.functionTypeCheck(f, {func: 1, ret: -1, args: [P.String, P.String]});
+      for (t1 = this.get$keys(), t2 = t1.length, t3 = this._html$_element, _i = 0; _i < t1.length; t1.length === t2 || (0, H.throwConcurrentModificationError)(t1), ++_i) {
+        key = t1[_i];
+        f.call$2(key, t3.getAttribute(key));
+      }
+    },
+    get$keys: function() {
+      var len, i, attr,
+        attributes = this._html$_element.attributes,
+        keys = H.setRuntimeTypeInfo([], [P.String]);
+      for (len = attributes.length, i = 0; i < len; ++i) {
+        if (i >= attributes.length)
+          return H.ioore(attributes, i);
+        attr = H.interceptedTypeCheck(attributes[i], "$is_Attr");
+        if (attr.namespaceURI == null)
+          C.JSArray_methods.add$1(keys, attr.name);
+      }
+      return keys;
+    },
+    $asMapMixin: function() {
+      return [P.String, P.String];
+    },
+    $asMap: function() {
+      return [P.String, P.String];
+    }
+  };
+  W._ElementAttributeMap.prototype = {
+    $index: function(_, key) {
+      return this._html$_element.getAttribute(H.stringTypeCheck(key));
+    },
+    get$length: function(_) {
+      return this.get$keys().length;
+    }
+  };
   W._EventStream.prototype = {};
   W._ElementEventStreamImpl.prototype = {};
   W._EventStreamSubscription.prototype = {};
@@ -3254,129 +4507,463 @@
     call$1: function(e) {
       return this.onData.call$1(H.interceptedTypeCheck(e, "$isEvent"));
     },
-    $signature: 10
+    $signature: 15
   };
-  P._Random.prototype = {
-    _Random$1: function(seed) {
-      var low, high, tmplow, low0, t1, t2, t3, _this = this, _4294967296 = 4294967296,
-        empty_seed = seed < 0 ? -1 : 0;
-      do {
-        low = (seed & 4294967295) >>> 0;
-        seed = C.JSInt_methods._tdivFast$1(seed - low, _4294967296);
-        high = (seed & 4294967295) >>> 0;
-        seed = C.JSInt_methods._tdivFast$1(seed - high, _4294967296);
-        tmplow = ((~low & 4294967295) >>> 0) + (low << 21 >>> 0);
-        low0 = (tmplow & 4294967295) >>> 0;
-        high = (~high >>> 0) + ((high << 21 | low >>> 11) >>> 0) + C.JSInt_methods._tdivFast$1(tmplow - low0, _4294967296) & 4294967295;
-        tmplow = ((low0 ^ (low0 >>> 24 | high << 8)) >>> 0) * 265;
-        low = (tmplow & 4294967295) >>> 0;
-        high = ((high ^ high >>> 24) >>> 0) * 265 + C.JSInt_methods._tdivFast$1(tmplow - low, _4294967296) & 4294967295;
-        tmplow = ((low ^ (low >>> 14 | high << 18)) >>> 0) * 21;
-        low = (tmplow & 4294967295) >>> 0;
-        high = ((high ^ high >>> 14) >>> 0) * 21 + C.JSInt_methods._tdivFast$1(tmplow - low, _4294967296) & 4294967295;
-        low = (low ^ (low >>> 28 | high << 4)) >>> 0;
-        high = (high ^ high >>> 28) >>> 0;
-        tmplow = (low << 31 >>> 0) + low;
-        low0 = (tmplow & 4294967295) >>> 0;
-        t1 = C.JSInt_methods._tdivFast$1(tmplow - low0, _4294967296);
-        tmplow = _this._lo * 1037;
-        t2 = _this._lo = (tmplow & 4294967295) >>> 0;
-        t3 = (_this._hi * 1037 + C.JSInt_methods._tdivFast$1(tmplow - t2, _4294967296) & 4294967295) >>> 0;
-        _this._hi = t3;
-        t2 = (t2 ^ low0) >>> 0;
-        _this._lo = t2;
-        t1 = (t3 ^ high + ((high << 31 | low >>> 1) >>> 0) + t1 & 4294967295) >>> 0;
-        _this._hi = t1;
-      } while (seed !== empty_seed);
-      if (t1 === 0 && t2 === 0)
-        _this._lo = 23063;
-      _this._nextState$0();
-      _this._nextState$0();
-      _this._nextState$0();
-      _this._nextState$0();
-    },
-    _nextState$0: function() {
-      var _this = this,
-        t1 = _this._lo,
-        tmpHi = 4294901760 * t1,
-        tmpHiLo = (tmpHi & 4294967295) >>> 0,
-        tmpLo = 55905 * t1,
-        tmpLoLo = (tmpLo & 4294967295) >>> 0,
-        newLo = tmpLoLo + tmpHiLo + _this._hi;
-      t1 = (newLo & 4294967295) >>> 0;
-      _this._lo = t1;
-      _this._hi = (C.JSInt_methods._tdivFast$1(tmpLo - tmpLoLo + (tmpHi - tmpHiLo) + (newLo - t1), 4294967296) & 4294967295) >>> 0;
-    },
-    nextInt$1: function(max) {
-      var t1, rnd32, result, _this = this;
-      if (max <= 0 || max > 4294967296)
-        throw H.wrapException(P.RangeError$("max must be in range 0 < max \u2264 2^32, was " + max));
-      t1 = max - 1;
-      if ((max & t1) >>> 0 === 0) {
-        _this._nextState$0();
-        return (_this._lo & t1) >>> 0;
+  W._Html5NodeValidator.prototype = {
+    _Html5NodeValidator$1$uriPolicy: function(uriPolicy) {
+      var _i;
+      if ($._Html5NodeValidator__attributeValidators.__js_helper$_length === 0) {
+        for (_i = 0; _i < 262; ++_i)
+          $._Html5NodeValidator__attributeValidators.$indexSet(0, C.List_2Zi[_i], W.html__Html5NodeValidator__standardAttributeValidator$closure());
+        for (_i = 0; _i < 12; ++_i)
+          $._Html5NodeValidator__attributeValidators.$indexSet(0, C.List_yrN[_i], W.html__Html5NodeValidator__uriAttributeValidator$closure());
       }
-      do {
-        _this._nextState$0();
-        rnd32 = _this._lo;
-        result = rnd32 % max;
-      } while (rnd32 - result + max >= 4294967296);
-      return result;
+    },
+    allowsElement$1: function(element) {
+      return $.$get$_Html5NodeValidator__allowedElements().contains$1(0, W.Element__safeTagName(element));
+    },
+    allowsAttribute$3: function(element, attributeName, value) {
+      var validator = $._Html5NodeValidator__attributeValidators.$index(0, H.S(W.Element__safeTagName(element)) + "::" + attributeName);
+      if (validator == null)
+        validator = $._Html5NodeValidator__attributeValidators.$index(0, "*::" + attributeName);
+      if (validator == null)
+        return false;
+      return H.boolTypeCheck(validator.call$4(element, attributeName, value, this));
+    },
+    $isNodeValidator: 1
+  };
+  W.ImmutableListMixin.prototype = {
+    get$iterator: function(receiver) {
+      return new W.FixedSizeListIterator(receiver, this.get$length(receiver), [H.getRuntimeTypeArgumentIntercepted(this, receiver, "ImmutableListMixin", 0)]);
     }
   };
+  W.NodeValidatorBuilder.prototype = {
+    allowsElement$1: function(element) {
+      return C.JSArray_methods.any$1(this._validators, new W.NodeValidatorBuilder_allowsElement_closure(element));
+    },
+    allowsAttribute$3: function(element, attributeName, value) {
+      return C.JSArray_methods.any$1(this._validators, new W.NodeValidatorBuilder_allowsAttribute_closure(element, attributeName, value));
+    },
+    $isNodeValidator: 1
+  };
+  W.NodeValidatorBuilder_allowsElement_closure.prototype = {
+    call$1: function(v) {
+      return H.interceptedTypeCheck(v, "$isNodeValidator").allowsElement$1(this.element);
+    },
+    $signature: 5
+  };
+  W.NodeValidatorBuilder_allowsAttribute_closure.prototype = {
+    call$1: function(v) {
+      return H.interceptedTypeCheck(v, "$isNodeValidator").allowsAttribute$3(this.element, this.attributeName, this.value);
+    },
+    $signature: 5
+  };
+  W._SimpleNodeValidator.prototype = {
+    _SimpleNodeValidator$4$allowedAttributes$allowedElements$allowedUriAttributes: function(uriPolicy, allowedAttributes, allowedElements, allowedUriAttributes) {
+      var legalAttributes, extraUriAttributes, t1;
+      this.allowedElements.addAll$1(0, allowedElements);
+      legalAttributes = allowedAttributes.where$1(0, new W._SimpleNodeValidator_closure());
+      extraUriAttributes = allowedAttributes.where$1(0, new W._SimpleNodeValidator_closure0());
+      this.allowedAttributes.addAll$1(0, legalAttributes);
+      t1 = this.allowedUriAttributes;
+      t1.addAll$1(0, C.List_empty);
+      t1.addAll$1(0, extraUriAttributes);
+    },
+    allowsElement$1: function(element) {
+      return this.allowedElements.contains$1(0, W.Element__safeTagName(element));
+    },
+    allowsAttribute$3: function(element, attributeName, value) {
+      var _this = this,
+        tagName = W.Element__safeTagName(element),
+        t1 = _this.allowedUriAttributes;
+      if (t1.contains$1(0, H.S(tagName) + "::" + attributeName))
+        return _this.uriPolicy.allowsUri$1(value);
+      else if (t1.contains$1(0, "*::" + attributeName))
+        return _this.uriPolicy.allowsUri$1(value);
+      else {
+        t1 = _this.allowedAttributes;
+        if (t1.contains$1(0, H.S(tagName) + "::" + attributeName))
+          return true;
+        else if (t1.contains$1(0, "*::" + attributeName))
+          return true;
+        else if (t1.contains$1(0, H.S(tagName) + "::*"))
+          return true;
+        else if (t1.contains$1(0, "*::*"))
+          return true;
+      }
+      return false;
+    },
+    $isNodeValidator: 1
+  };
+  W._SimpleNodeValidator_closure.prototype = {
+    call$1: function(x) {
+      return !C.JSArray_methods.contains$1(C.List_yrN, H.stringTypeCheck(x));
+    },
+    $signature: 6
+  };
+  W._SimpleNodeValidator_closure0.prototype = {
+    call$1: function(x) {
+      return C.JSArray_methods.contains$1(C.List_yrN, H.stringTypeCheck(x));
+    },
+    $signature: 6
+  };
+  W._TemplatingNodeValidator.prototype = {
+    allowsAttribute$3: function(element, attributeName, value) {
+      if (this.super$_SimpleNodeValidator$allowsAttribute(element, attributeName, value))
+        return true;
+      if (attributeName === "template" && value === "")
+        return true;
+      if (element.getAttribute("template") === "")
+        return this._templateAttrs.contains$1(0, attributeName);
+      return false;
+    }
+  };
+  W._TemplatingNodeValidator_closure.prototype = {
+    call$1: function(attr) {
+      return "TEMPLATE::" + H.S(H.stringTypeCheck(attr));
+    },
+    $signature: 16
+  };
+  W._SvgNodeValidator.prototype = {
+    allowsElement$1: function(element) {
+      var t1 = J.getInterceptor$(element);
+      if (!!t1.$isScriptElement)
+        return false;
+      t1 = !!t1.$isSvgElement;
+      if (t1 && W.Element__safeTagName(element) === "foreignObject")
+        return false;
+      if (t1)
+        return true;
+      return false;
+    },
+    allowsAttribute$3: function(element, attributeName, value) {
+      if (attributeName === "is" || C.JSString_methods.startsWith$1(attributeName, "on"))
+        return false;
+      return this.allowsElement$1(element);
+    },
+    $isNodeValidator: 1
+  };
+  W.FixedSizeListIterator.prototype = {
+    moveNext$0: function() {
+      var _this = this,
+        nextPosition = _this._position + 1,
+        t1 = _this._html$_length;
+      if (nextPosition < t1) {
+        _this.set$_html$_current(J.$index$asx(_this._array, nextPosition));
+        _this._position = nextPosition;
+        return true;
+      }
+      _this.set$_html$_current(null);
+      _this._position = t1;
+      return false;
+    },
+    get$current: function() {
+      return this._html$_current;
+    },
+    set$_html$_current: function(_current) {
+      this._html$_current = H.assertSubtypeOfRuntimeType(_current, H.getTypeArgumentByIndex(this, 0));
+    },
+    $isIterator: 1
+  };
+  W.NodeValidator.prototype = {};
+  W._SameOriginUriPolicy.prototype = {$isUriPolicy: 1};
+  W._ValidatingTreeSanitizer.prototype = {
+    sanitizeTree$1: function(node) {
+      new W._ValidatingTreeSanitizer_sanitizeTree_walk(this).call$2(node, null);
+    },
+    _removeNode$2: function(node, $parent) {
+      if ($parent == null)
+        J.remove$0$x(node);
+      else
+        $parent.removeChild(node);
+    },
+    _sanitizeUntrustedElement$2: function(element, $parent) {
+      var corruptedTest1, elementText, elementTagName, exception, t1,
+        corrupted = true,
+        attrs = null, isAttr = null;
+      try {
+        attrs = J.get$attributes$x(element);
+        isAttr = attrs._html$_element.getAttribute("is");
+        H.interceptedTypeCheck(element, "$isElement");
+        corruptedTest1 = function(element) {
+          if (!(element.attributes instanceof NamedNodeMap))
+            return true;
+          var childNodes = element.childNodes;
+          if (element.lastChild && element.lastChild !== childNodes[childNodes.length - 1])
+            return true;
+          if (element.children)
+            if (!(element.children instanceof HTMLCollection || element.children instanceof NodeList))
+              return true;
+          var length = 0;
+          if (element.children)
+            length = element.children.length;
+          for (var i = 0; i < length; i++) {
+            var child = element.children[i];
+            if (child.id == 'attributes' || child.name == 'attributes' || child.id == 'lastChild' || child.name == 'lastChild' || child.id == 'children' || child.name == 'children')
+              return true;
+          }
+          return false;
+        }(element);
+        corrupted = H.boolConversionCheck(corruptedTest1) ? true : !(element.attributes instanceof NamedNodeMap);
+      } catch (exception) {
+        H.unwrapException(exception);
+      }
+      elementText = "element unprintable";
+      try {
+        elementText = J.toString$0$(element);
+      } catch (exception) {
+        H.unwrapException(exception);
+      }
+      try {
+        elementTagName = W.Element__safeTagName(element);
+        this._sanitizeElement$7(H.interceptedTypeCheck(element, "$isElement"), $parent, corrupted, elementText, elementTagName, H.interceptedTypeCheck(attrs, "$isMap"), H.stringTypeCheck(isAttr));
+      } catch (exception) {
+        if (H.unwrapException(exception) instanceof P.ArgumentError)
+          throw exception;
+        else {
+          this._removeNode$2(element, $parent);
+          window;
+          t1 = "Removing corrupted element " + H.S(elementText);
+          if (typeof console != "undefined")
+            window.console.warn(t1);
+        }
+      }
+    },
+    _sanitizeElement$7: function(element, $parent, corrupted, text, tag, attrs, isAttr) {
+      var t1, keys, i, $name, t2, t3, _this = this;
+      if (corrupted) {
+        _this._removeNode$2(element, $parent);
+        window;
+        t1 = "Removing element due to corrupted attributes on <" + text + ">";
+        if (typeof console != "undefined")
+          window.console.warn(t1);
+        return;
+      }
+      if (!_this.validator.allowsElement$1(element)) {
+        _this._removeNode$2(element, $parent);
+        window;
+        t1 = "Removing disallowed element <" + H.S(tag) + "> from " + H.S($parent);
+        if (typeof console != "undefined")
+          window.console.warn(t1);
+        return;
+      }
+      if (isAttr != null)
+        if (!_this.validator.allowsAttribute$3(element, "is", isAttr)) {
+          _this._removeNode$2(element, $parent);
+          window;
+          t1 = "Removing disallowed type extension <" + H.S(tag) + ' is="' + isAttr + '">';
+          if (typeof console != "undefined")
+            window.console.warn(t1);
+          return;
+        }
+      t1 = attrs.get$keys();
+      keys = H.setRuntimeTypeInfo(t1.slice(0), [H.getTypeArgumentByIndex(t1, 0)]);
+      for (i = attrs.get$keys().length - 1, t1 = attrs._html$_element; i >= 0; --i) {
+        if (i >= keys.length)
+          return H.ioore(keys, i);
+        $name = keys[i];
+        t2 = _this.validator;
+        t3 = J.toLowerCase$0$s($name);
+        H.stringTypeCheck($name);
+        if (!t2.allowsAttribute$3(element, t3, t1.getAttribute($name))) {
+          window;
+          t2 = "Removing disallowed attribute <" + H.S(tag) + " " + $name + '="' + H.S(t1.getAttribute($name)) + '">';
+          if (typeof console != "undefined")
+            window.console.warn(t2);
+          t1.removeAttribute($name);
+        }
+      }
+      if (!!J.getInterceptor$(element).$isTemplateElement)
+        _this.sanitizeTree$1(element.content);
+    },
+    $isNodeTreeSanitizer: 1
+  };
+  W._ValidatingTreeSanitizer_sanitizeTree_walk.prototype = {
+    call$2: function(node, $parent) {
+      var child, nextChild, exception, t2, t3,
+        t1 = this.$this;
+      switch (node.nodeType) {
+        case 1:
+          t1._sanitizeUntrustedElement$2(node, $parent);
+          break;
+        case 8:
+        case 11:
+        case 3:
+        case 4:
+          break;
+        default:
+          t1._removeNode$2(node, $parent);
+      }
+      child = node.lastChild;
+      for (t1 = node == null; null != child;) {
+        nextChild = null;
+        try {
+          nextChild = child.previousSibling;
+        } catch (exception) {
+          H.unwrapException(exception);
+          t2 = H.interceptedTypeCheck(child, "$isNode");
+          if (t1) {
+            t3 = t2.parentNode;
+            if (t3 != null)
+              t3.removeChild(t2);
+          } else
+            node.removeChild(t2);
+          child = null;
+          nextChild = node.lastChild;
+        }
+        if (child != null)
+          this.call$2(child, node);
+        child = H.interceptedTypeCheck(nextChild, "$isNode");
+      }
+    },
+    $signature: 17
+  };
+  W._NodeList_Interceptor_ListMixin.prototype = {};
+  W._NodeList_Interceptor_ListMixin_ImmutableListMixin.prototype = {};
+  W.__NamedNodeMap_Interceptor_ListMixin.prototype = {};
+  W.__NamedNodeMap_Interceptor_ListMixin_ImmutableListMixin.prototype = {};
+  P.ScriptElement.prototype = {$isScriptElement: 1};
   P.SvgElement.prototype = {
+    createFragment$3$treeSanitizer$validator: function(receiver, svg, treeSanitizer, validator) {
+      var html, t2, fragment, svgFragment, root,
+        t1 = H.setRuntimeTypeInfo([], [W.NodeValidator]);
+      C.JSArray_methods.add$1(t1, W._Html5NodeValidator$(null));
+      C.JSArray_methods.add$1(t1, W._TemplatingNodeValidator$());
+      C.JSArray_methods.add$1(t1, new W._SvgNodeValidator());
+      treeSanitizer = new W._ValidatingTreeSanitizer(new W.NodeValidatorBuilder(t1));
+      html = '<svg version="1.1">' + svg + "</svg>";
+      t1 = document;
+      t2 = t1.body;
+      fragment = (t2 && C.BodyElement_methods).createFragment$2$treeSanitizer(t2, html, treeSanitizer);
+      svgFragment = t1.createDocumentFragment();
+      fragment.toString;
+      t1 = new W._ChildNodeListLazy(fragment);
+      root = t1.get$single(t1);
+      for (; t1 = root.firstChild, t1 != null;)
+        svgFragment.appendChild(t1);
+      return svgFragment;
+    },
     get$onClick: function(receiver) {
       return new W._ElementEventStreamImpl(receiver, "click", false, [W.MouseEvent]);
-    }
+    },
+    $isSvgElement: 1
+  };
+  L.main_closure.prototype = {
+    call$1: function(e) {
+      var t1, output, len, t2, type, number;
+      H.interceptedTypeCheck(e, "$isMouseEvent");
+      t1 = this.tempInput.value;
+      output = H.interceptedTypeCheck(document.querySelector("#output"), "$isLabelElement");
+      len = t1.length;
+      t2 = len - 2;
+      if (t2 < 0)
+        return H.ioore(t1, t2);
+      type = t1[t2];
+      number = P.int_parse(J.substring$2$s(t1, 0, t2));
+      if (type === "L" || type === "l") {
+        t1 = " " + H.S(number) + " \u82f1\u78c5 =  ";
+        if (typeof number !== "number")
+          return number.$mul();
+        (output && C.LabelElement_methods).setInnerHtml$1(output, t1 + C.JSNumber_methods.toStringAsFixed$1(number * 0.454, 2) + " \u516c\u65a4");
+      } else {
+        t1 = type === "K" || type === "k";
+        t2 = output && C.LabelElement_methods;
+        if (t1) {
+          t1 = " " + H.S(number) + " \u516c\u65a4 =  ";
+          if (typeof number !== "number")
+            return number.$mul();
+          t2.setInnerHtml$1(output, t1 + C.JSNumber_methods.toStringAsFixed$1(number * 2.205, 2) + " \u82f1\u78c5");
+        } else
+          t2.setInnerHtml$1(output, "\u8acb\u8f38\u5165\u6578\u5b57\u52a0\u4e0a LB \u6216 KG!");
+      }
+      return;
+    },
+    $signature: 18
   };
   (function aliases() {
     var _ = J.Interceptor.prototype;
     _.super$Interceptor$toString = _.toString$0;
     _ = J.JavaScriptObject.prototype;
     _.super$JavaScriptObject$toString = _.toString$0;
+    _ = P.Iterable.prototype;
+    _.super$Iterable$where = _.where$1;
+    _ = W.Element.prototype;
+    _.super$Element$createFragment = _.createFragment$3$treeSanitizer$validator;
+    _ = W._SimpleNodeValidator.prototype;
+    _.super$_SimpleNodeValidator$allowsAttribute = _.allowsAttribute$3;
   })();
   (function installTearOffs() {
     var _static_1 = hunkHelpers._static_1,
-      _static_0 = hunkHelpers._static_0;
+      _static_0 = hunkHelpers._static_0,
+      _static = hunkHelpers.installStaticTearOff;
     _static_1(P, "async__AsyncRun__scheduleImmediateJsOverride$closure", "_AsyncRun__scheduleImmediateJsOverride", 2);
     _static_1(P, "async__AsyncRun__scheduleImmediateWithSetImmediate$closure", "_AsyncRun__scheduleImmediateWithSetImmediate", 2);
     _static_1(P, "async__AsyncRun__scheduleImmediateWithTimer$closure", "_AsyncRun__scheduleImmediateWithTimer", 2);
     _static_0(P, "async___startMicrotaskLoop$closure", "_startMicrotaskLoop", 1);
-    _static_1(U, "web_guessing__writeoutput$closure", "writeoutput", 11);
+    _static(W, "html__Html5NodeValidator__standardAttributeValidator$closure", 4, null, ["call$4"], ["_Html5NodeValidator__standardAttributeValidator"], 7, 0);
+    _static(W, "html__Html5NodeValidator__uriAttributeValidator$closure", 4, null, ["call$4"], ["_Html5NodeValidator__uriAttributeValidator"], 7, 0);
   })();
   (function inheritance() {
-    var _inherit = hunkHelpers.inherit,
+    var _mixin = hunkHelpers.mixin,
+      _inherit = hunkHelpers.inherit,
       _inheritMany = hunkHelpers.inheritMany;
     _inherit(P.Object, null);
-    _inheritMany(P.Object, [H.JS_CONST, J.Interceptor, J.ArrayIterator, H.TypeErrorDecoder, P.Error, H.Closure, H._StackTrace, P._TimerImpl, P._FutureListener, P._Future, P._AsyncCallbackEntry, P.Stream, P.StreamSubscription, P.AsyncError, P._Zone, P.bool, P.DateTime, P.num, P.StackOverflowError, P._Exception, P.FormatException, P.List, P.Null, P.StackTrace, P.String, P.StringBuffer, P._Random]);
-    _inheritMany(J.Interceptor, [J.JSBool, J.JSNull, J.JavaScriptObject, J.JSArray, J.JSNumber, J.JSString, W.EventTarget, W.DomException, W.Event]);
+    _inheritMany(P.Object, [H.JS_CONST, J.Interceptor, J.ArrayIterator, P.Iterable, H.ListIterator, P.Iterator, H.TypeErrorDecoder, P.Error, H.Closure, H._StackTrace, P.MapMixin, H.LinkedHashMapCell, H.LinkedHashMapKeyIterator, P._TimerImpl, P._FutureListener, P._Future, P._AsyncCallbackEntry, P.Stream, P.StreamSubscription, P.AsyncError, P._Zone, P._SetBase, P._LinkedHashSetCell, P._LinkedHashSetIterator, P._ListBase_Object_ListMixin, P.ListMixin, P.bool, P.num, P.StackOverflowError, P._Exception, P.FormatException, P.Function, P.List, P.Null, P.StackTrace, P.String, P.StringBuffer, W._Html5NodeValidator, W.ImmutableListMixin, W.NodeValidatorBuilder, W._SimpleNodeValidator, W._SvgNodeValidator, W.FixedSizeListIterator, W.NodeValidator, W._SameOriginUriPolicy, W._ValidatingTreeSanitizer]);
+    _inheritMany(J.Interceptor, [J.JSBool, J.JSNull, J.JavaScriptObject, J.JSArray, J.JSNumber, J.JSString, W.EventTarget, W.DomException, W.Event, W.Location, W._NodeList_Interceptor_ListMixin, W.__NamedNodeMap_Interceptor_ListMixin]);
     _inheritMany(J.JavaScriptObject, [J.PlainJavaScriptObject, J.UnknownJavaScriptObject, J.JavaScriptFunction]);
     _inherit(J.JSUnmodifiableArray, J.JSArray);
     _inheritMany(J.JSNumber, [J.JSInt, J.JSDouble]);
-    _inheritMany(P.Error, [H.NullError, H.JsNoSuchMethodError, H.UnknownJsTypeError, H.TypeErrorImplementation, H.RuntimeError, P.AssertionError, P.NullThrownError, P.ArgumentError, P.UnsupportedError, P.UnimplementedError, P.ConcurrentModificationError, P.CyclicInitializationError]);
-    _inheritMany(H.Closure, [H.unwrapException_saveStackTrace, H.TearOffClosure, H.initHooks_closure, H.initHooks_closure0, H.initHooks_closure1, P._AsyncRun__initializeScheduleImmediate_internalCallback, P._AsyncRun__initializeScheduleImmediate_closure, P._AsyncRun__scheduleImmediateJsOverride_internalCallback, P._AsyncRun__scheduleImmediateWithSetImmediate_internalCallback, P._TimerImpl_internalCallback, P._Future__addListener_closure, P._Future__prependListeners_closure, P._Future__chainForeignFuture_closure, P._Future__chainForeignFuture_closure0, P._Future__chainForeignFuture_closure1, P._Future__propagateToListeners_handleWhenCompleteCallback, P._Future__propagateToListeners_handleWhenCompleteCallback_closure, P._Future__propagateToListeners_handleValueCallback, P._Future__propagateToListeners_handleError, P.Stream_length_closure, P.Stream_length_closure0, P._rootHandleUncaughtError_closure, P._RootZone_bindCallback_closure, P._RootZone_bindCallbackGuarded_closure, P._RootZone_bindUnaryCallbackGuarded_closure, W._EventStreamSubscription_closure]);
+    _inheritMany(P.Iterable, [H.EfficientLengthIterable, H.WhereIterable]);
+    _inheritMany(H.EfficientLengthIterable, [H.ListIterable, H.LinkedHashMapKeyIterable]);
+    _inherit(H.MappedListIterable, H.ListIterable);
+    _inherit(H.WhereIterator, P.Iterator);
+    _inheritMany(P.Error, [H.NullError, H.JsNoSuchMethodError, H.UnknownJsTypeError, H.TypeErrorImplementation, H.RuntimeError, P.AssertionError, P.NullThrownError, P.ArgumentError, P.UnsupportedError, P.UnimplementedError, P.StateError, P.ConcurrentModificationError, P.CyclicInitializationError]);
+    _inheritMany(H.Closure, [H.unwrapException_saveStackTrace, H.TearOffClosure, H.initHooks_closure, H.initHooks_closure0, H.initHooks_closure1, P._AsyncRun__initializeScheduleImmediate_internalCallback, P._AsyncRun__initializeScheduleImmediate_closure, P._AsyncRun__scheduleImmediateJsOverride_internalCallback, P._AsyncRun__scheduleImmediateWithSetImmediate_internalCallback, P._TimerImpl_internalCallback, P._Future__addListener_closure, P._Future__prependListeners_closure, P._Future__chainForeignFuture_closure, P._Future__chainForeignFuture_closure0, P._Future__chainForeignFuture_closure1, P._Future__propagateToListeners_handleWhenCompleteCallback, P._Future__propagateToListeners_handleWhenCompleteCallback_closure, P._Future__propagateToListeners_handleValueCallback, P._Future__propagateToListeners_handleError, P.Stream_length_closure, P.Stream_length_closure0, P._rootHandleUncaughtError_closure, P._RootZone_bindCallback_closure, P._RootZone_bindCallbackGuarded_closure, P._RootZone_bindUnaryCallbackGuarded_closure, P.MapBase_mapToString_closure, W.Element_Element$html_closure, W._EventStreamSubscription_closure, W.NodeValidatorBuilder_allowsElement_closure, W.NodeValidatorBuilder_allowsAttribute_closure, W._SimpleNodeValidator_closure, W._SimpleNodeValidator_closure0, W._TemplatingNodeValidator_closure, W._ValidatingTreeSanitizer_sanitizeTree_walk, L.main_closure]);
     _inheritMany(H.TearOffClosure, [H.StaticClosure, H.BoundClosure]);
     _inherit(H._AssertionError, P.AssertionError);
+    _inherit(P.MapBase, P.MapMixin);
+    _inheritMany(P.MapBase, [H.JsLinkedHashMap, W._AttributeMap]);
     _inherit(P._RootZone, P._Zone);
+    _inherit(P._LinkedHashSet, P._SetBase);
+    _inherit(P.ListBase, P._ListBase_Object_ListMixin);
     _inheritMany(P.num, [P.double, P.int]);
     _inheritMany(P.ArgumentError, [P.RangeError, P.IndexError]);
     _inherit(W.Node, W.EventTarget);
-    _inherit(W.Element, W.Node);
+    _inheritMany(W.Node, [W.Element, W.CharacterData, W._Attr]);
     _inheritMany(W.Element, [W.HtmlElement, P.SvgElement]);
-    _inheritMany(W.HtmlElement, [W.AnchorElement, W.AreaElement, W.DivElement, W.FormElement, W.InputElement, W.SelectElement]);
+    _inheritMany(W.HtmlElement, [W.AnchorElement, W.AreaElement, W.BaseElement, W.BodyElement, W.FormElement, W.InputElement, W.LabelElement, W.SelectElement, W.TableElement, W.TableRowElement, W.TableSectionElement, W.TemplateElement]);
     _inherit(W.UIEvent, W.Event);
     _inherit(W.MouseEvent, W.UIEvent);
+    _inherit(W._ChildNodeListLazy, P.ListBase);
+    _inherit(W._NodeList_Interceptor_ListMixin_ImmutableListMixin, W._NodeList_Interceptor_ListMixin);
+    _inherit(W.NodeList, W._NodeList_Interceptor_ListMixin_ImmutableListMixin);
+    _inherit(W.__NamedNodeMap_Interceptor_ListMixin_ImmutableListMixin, W.__NamedNodeMap_Interceptor_ListMixin);
+    _inherit(W._NamedNodeMap, W.__NamedNodeMap_Interceptor_ListMixin_ImmutableListMixin);
+    _inherit(W._ElementAttributeMap, W._AttributeMap);
     _inherit(W._EventStream, P.Stream);
     _inherit(W._ElementEventStreamImpl, W._EventStream);
     _inherit(W._EventStreamSubscription, P.StreamSubscription);
+    _inherit(W._TemplatingNodeValidator, W._SimpleNodeValidator);
+    _inherit(P.ScriptElement, P.SvgElement);
+    _mixin(P._ListBase_Object_ListMixin, P.ListMixin);
+    _mixin(W._NodeList_Interceptor_ListMixin, P.ListMixin);
+    _mixin(W._NodeList_Interceptor_ListMixin_ImmutableListMixin, W.ImmutableListMixin);
+    _mixin(W.__NamedNodeMap_Interceptor_ListMixin, P.ListMixin);
+    _mixin(W.__NamedNodeMap_Interceptor_ListMixin_ImmutableListMixin, W.ImmutableListMixin);
   })();
   (function constants() {
+    var makeConstList = hunkHelpers.makeConstList;
+    C.BodyElement_methods = W.BodyElement.prototype;
     C.Interceptor_methods = J.Interceptor.prototype;
     C.JSArray_methods = J.JSArray.prototype;
     C.JSInt_methods = J.JSInt.prototype;
+    C.JSNumber_methods = J.JSNumber.prototype;
     C.JSString_methods = J.JSString.prototype;
     C.JavaScriptFunction_methods = J.JavaScriptFunction.prototype;
+    C.LabelElement_methods = W.LabelElement.prototype;
+    C.NodeList_methods = W.NodeList.prototype;
     C.PlainJavaScriptObject_methods = J.PlainJavaScriptObject.prototype;
+    C.TableElement_methods = W.TableElement.prototype;
     C.UnknownJavaScriptObject_methods = J.UnknownJavaScriptObject.prototype;
     C.C_JS_CONST = function getTagFallback(o) {
   var s = Object.prototype.toString.call(o);
@@ -3499,8 +5086,13 @@
     C.C_JS_CONST3 = function(hooks) { return hooks; }
 ;
     C.C__RootZone = new P._RootZone();
+    C.List_2Zi = H.setRuntimeTypeInfo(makeConstList(["*::class", "*::dir", "*::draggable", "*::hidden", "*::id", "*::inert", "*::itemprop", "*::itemref", "*::itemscope", "*::lang", "*::spellcheck", "*::title", "*::translate", "A::accesskey", "A::coords", "A::hreflang", "A::name", "A::shape", "A::tabindex", "A::target", "A::type", "AREA::accesskey", "AREA::alt", "AREA::coords", "AREA::nohref", "AREA::shape", "AREA::tabindex", "AREA::target", "AUDIO::controls", "AUDIO::loop", "AUDIO::mediagroup", "AUDIO::muted", "AUDIO::preload", "BDO::dir", "BODY::alink", "BODY::bgcolor", "BODY::link", "BODY::text", "BODY::vlink", "BR::clear", "BUTTON::accesskey", "BUTTON::disabled", "BUTTON::name", "BUTTON::tabindex", "BUTTON::type", "BUTTON::value", "CANVAS::height", "CANVAS::width", "CAPTION::align", "COL::align", "COL::char", "COL::charoff", "COL::span", "COL::valign", "COL::width", "COLGROUP::align", "COLGROUP::char", "COLGROUP::charoff", "COLGROUP::span", "COLGROUP::valign", "COLGROUP::width", "COMMAND::checked", "COMMAND::command", "COMMAND::disabled", "COMMAND::label", "COMMAND::radiogroup", "COMMAND::type", "DATA::value", "DEL::datetime", "DETAILS::open", "DIR::compact", "DIV::align", "DL::compact", "FIELDSET::disabled", "FONT::color", "FONT::face", "FONT::size", "FORM::accept", "FORM::autocomplete", "FORM::enctype", "FORM::method", "FORM::name", "FORM::novalidate", "FORM::target", "FRAME::name", "H1::align", "H2::align", "H3::align", "H4::align", "H5::align", "H6::align", "HR::align", "HR::noshade", "HR::size", "HR::width", "HTML::version", "IFRAME::align", "IFRAME::frameborder", "IFRAME::height", "IFRAME::marginheight", "IFRAME::marginwidth", "IFRAME::width", "IMG::align", "IMG::alt", "IMG::border", "IMG::height", "IMG::hspace", "IMG::ismap", "IMG::name", "IMG::usemap", "IMG::vspace", "IMG::width", "INPUT::accept", "INPUT::accesskey", "INPUT::align", "INPUT::alt", "INPUT::autocomplete", "INPUT::autofocus", "INPUT::checked", "INPUT::disabled", "INPUT::inputmode", "INPUT::ismap", "INPUT::list", "INPUT::max", "INPUT::maxlength", "INPUT::min", "INPUT::multiple", "INPUT::name", "INPUT::placeholder", "INPUT::readonly", "INPUT::required", "INPUT::size", "INPUT::step", "INPUT::tabindex", "INPUT::type", "INPUT::usemap", "INPUT::value", "INS::datetime", "KEYGEN::disabled", "KEYGEN::keytype", "KEYGEN::name", "LABEL::accesskey", "LABEL::for", "LEGEND::accesskey", "LEGEND::align", "LI::type", "LI::value", "LINK::sizes", "MAP::name", "MENU::compact", "MENU::label", "MENU::type", "METER::high", "METER::low", "METER::max", "METER::min", "METER::value", "OBJECT::typemustmatch", "OL::compact", "OL::reversed", "OL::start", "OL::type", "OPTGROUP::disabled", "OPTGROUP::label", "OPTION::disabled", "OPTION::label", "OPTION::selected", "OPTION::value", "OUTPUT::for", "OUTPUT::name", "P::align", "PRE::width", "PROGRESS::max", "PROGRESS::min", "PROGRESS::value", "SELECT::autocomplete", "SELECT::disabled", "SELECT::multiple", "SELECT::name", "SELECT::required", "SELECT::size", "SELECT::tabindex", "SOURCE::type", "TABLE::align", "TABLE::bgcolor", "TABLE::border", "TABLE::cellpadding", "TABLE::cellspacing", "TABLE::frame", "TABLE::rules", "TABLE::summary", "TABLE::width", "TBODY::align", "TBODY::char", "TBODY::charoff", "TBODY::valign", "TD::abbr", "TD::align", "TD::axis", "TD::bgcolor", "TD::char", "TD::charoff", "TD::colspan", "TD::headers", "TD::height", "TD::nowrap", "TD::rowspan", "TD::scope", "TD::valign", "TD::width", "TEXTAREA::accesskey", "TEXTAREA::autocomplete", "TEXTAREA::cols", "TEXTAREA::disabled", "TEXTAREA::inputmode", "TEXTAREA::name", "TEXTAREA::placeholder", "TEXTAREA::readonly", "TEXTAREA::required", "TEXTAREA::rows", "TEXTAREA::tabindex", "TEXTAREA::wrap", "TFOOT::align", "TFOOT::char", "TFOOT::charoff", "TFOOT::valign", "TH::abbr", "TH::align", "TH::axis", "TH::bgcolor", "TH::char", "TH::charoff", "TH::colspan", "TH::headers", "TH::height", "TH::nowrap", "TH::rowspan", "TH::scope", "TH::valign", "TH::width", "THEAD::align", "THEAD::char", "THEAD::charoff", "THEAD::valign", "TR::align", "TR::bgcolor", "TR::char", "TR::charoff", "TR::valign", "TRACK::default", "TRACK::kind", "TRACK::label", "TRACK::srclang", "UL::compact", "UL::type", "VIDEO::controls", "VIDEO::height", "VIDEO::loop", "VIDEO::mediagroup", "VIDEO::muted", "VIDEO::preload", "VIDEO::width"]), [P.String]);
+    C.List_ego = H.setRuntimeTypeInfo(makeConstList(["HEAD", "AREA", "BASE", "BASEFONT", "BR", "COL", "COLGROUP", "EMBED", "FRAME", "FRAMESET", "HR", "IMAGE", "IMG", "INPUT", "ISINDEX", "LINK", "META", "PARAM", "SOURCE", "STYLE", "TITLE", "WBR"]), [P.String]);
+    C.List_empty = H.setRuntimeTypeInfo(makeConstList([]), [P.String]);
+    C.List_wSV = H.setRuntimeTypeInfo(makeConstList(["bind", "if", "ref", "repeat", "syntax"]), [P.String]);
+    C.List_yrN = H.setRuntimeTypeInfo(makeConstList(["A::href", "AREA::href", "BLOCKQUOTE::cite", "BODY::background", "COMMAND::icon", "DEL::cite", "FORM::action", "IMG::src", "INPUT::src", "INS::cite", "Q::cite", "VIDEO::poster"]), [P.String]);
   })();
-  var init = {mangledGlobalNames: {int: "int", double: "double", num: "num", String: "String", bool: "bool", Null: "Null", List: "List"}, mangledNames: {}, getTypeFromName: getGlobalFromName, metadata: [], types: [{func: 1, ret: P.Null}, {func: 1, ret: -1}, {func: 1, ret: -1, args: [{func: 1, ret: -1}]}, {func: 1, args: [,]}, {func: 1, ret: P.Null, args: [,]}, {func: 1, args: [, P.String]}, {func: 1, args: [P.String]}, {func: 1, ret: P.Null, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.Null, args: [,], opt: [P.StackTrace]}, {func: 1, ret: [P._Future,,], args: [,]}, {func: 1, args: [W.Event]}, {func: 1, ret: -1, args: [,]}], interceptorsByTag: null, leafTags: null};
+  var init = {mangledGlobalNames: {int: "int", double: "double", num: "num", String: "String", bool: "bool", Null: "Null", List: "List"}, mangledNames: {}, getTypeFromName: getGlobalFromName, metadata: [], types: [{func: 1, ret: P.Null}, {func: 1, ret: -1}, {func: 1, ret: -1, args: [{func: 1, ret: -1}]}, {func: 1, args: [,]}, {func: 1, ret: P.Null, args: [,]}, {func: 1, ret: P.bool, args: [W.NodeValidator]}, {func: 1, ret: P.bool, args: [P.String]}, {func: 1, ret: P.bool, args: [W.Element, P.String, P.String, W._Html5NodeValidator]}, {func: 1, args: [, P.String]}, {func: 1, args: [P.String]}, {func: 1, ret: P.Null, args: [{func: 1, ret: -1}]}, {func: 1, ret: P.Null, args: [,], opt: [P.StackTrace]}, {func: 1, ret: [P._Future,,], args: [,]}, {func: 1, ret: P.Null, args: [,,]}, {func: 1, ret: P.bool, args: [W.Node]}, {func: 1, args: [W.Event]}, {func: 1, ret: P.String, args: [P.String]}, {func: 1, ret: -1, args: [W.Node, W.Node]}, {func: 1, args: [W.MouseEvent]}], interceptorsByTag: null, leafTags: null};
   (function staticFields() {
     $.Closure_functionCounter = 0;
     $.BoundClosure_selfFieldNameCache = null;
@@ -3518,10 +5110,11 @@
     $._isInCallbackLoop = false;
     $.Zone__current = C.C__RootZone;
     $._toStringVisiting = [];
-    $.input = null;
-    $.output = null;
-    $.answer = null;
-    $.guessNum = 1;
+    $.Element__parseDocument = null;
+    $.Element__parseRange = null;
+    $.Element__defaultValidator = null;
+    $.Element__defaultSanitizer = null;
+    $._Html5NodeValidator__attributeValidators = P.LinkedHashMap_LinkedHashMap$_empty(P.String, P.Function);
   })();
   (function lazyInitializers() {
     var _lazy = hunkHelpers.lazy;
@@ -3598,12 +5191,8 @@
     _lazy($, "_AsyncRun__scheduleImmediateClosure", "$get$_AsyncRun__scheduleImmediateClosure", function() {
       return P._AsyncRun__initializeScheduleImmediate();
     });
-    _lazy($, "now", "$get$now", function() {
-      return new P.DateTime(Date.now(), false);
-    });
-    _lazy($, "rand", "$get$rand", function() {
-      var t1 = P._Random$($.$get$now()._value);
-      return t1;
+    _lazy($, "_Html5NodeValidator__allowedElements", "$get$_Html5NodeValidator__allowedElements", function() {
+      return P.LinkedHashSet_LinkedHashSet$from(["A", "ABBR", "ACRONYM", "ADDRESS", "AREA", "ARTICLE", "ASIDE", "AUDIO", "B", "BDI", "BDO", "BIG", "BLOCKQUOTE", "BR", "BUTTON", "CANVAS", "CAPTION", "CENTER", "CITE", "CODE", "COL", "COLGROUP", "COMMAND", "DATA", "DATALIST", "DD", "DEL", "DETAILS", "DFN", "DIR", "DIV", "DL", "DT", "EM", "FIELDSET", "FIGCAPTION", "FIGURE", "FONT", "FOOTER", "FORM", "H1", "H2", "H3", "H4", "H5", "H6", "HEADER", "HGROUP", "HR", "I", "IFRAME", "IMG", "INPUT", "INS", "KBD", "LABEL", "LEGEND", "LI", "MAP", "MARK", "MENU", "METER", "NAV", "NOBR", "OL", "OPTGROUP", "OPTION", "OUTPUT", "P", "PRE", "PROGRESS", "Q", "S", "SAMP", "SECTION", "SELECT", "SMALL", "SOURCE", "SPAN", "STRIKE", "STRONG", "SUB", "SUMMARY", "SUP", "TABLE", "TBODY", "TD", "TEXTAREA", "TFOOT", "TH", "THEAD", "TIME", "TR", "TRACK", "TT", "U", "UL", "VAR", "VIDEO", "WBR"], P.String);
     });
   })();
   (function nativeSupport() {
@@ -3629,8 +5218,8 @@
       }
       init.dispatchPropertyName = init.getIsolateTag("dispatch_record");
     }();
-    hunkHelpers.setOrUpdateInterceptorsByTag({DOMError: J.Interceptor, MediaError: J.Interceptor, NavigatorUserMediaError: J.Interceptor, OverconstrainedError: J.Interceptor, PositionError: J.Interceptor, SQLError: J.Interceptor, HTMLAudioElement: W.HtmlElement, HTMLBRElement: W.HtmlElement, HTMLBaseElement: W.HtmlElement, HTMLBodyElement: W.HtmlElement, HTMLButtonElement: W.HtmlElement, HTMLCanvasElement: W.HtmlElement, HTMLContentElement: W.HtmlElement, HTMLDListElement: W.HtmlElement, HTMLDataElement: W.HtmlElement, HTMLDataListElement: W.HtmlElement, HTMLDetailsElement: W.HtmlElement, HTMLDialogElement: W.HtmlElement, HTMLEmbedElement: W.HtmlElement, HTMLFieldSetElement: W.HtmlElement, HTMLHRElement: W.HtmlElement, HTMLHeadElement: W.HtmlElement, HTMLHeadingElement: W.HtmlElement, HTMLHtmlElement: W.HtmlElement, HTMLIFrameElement: W.HtmlElement, HTMLImageElement: W.HtmlElement, HTMLLIElement: W.HtmlElement, HTMLLabelElement: W.HtmlElement, HTMLLegendElement: W.HtmlElement, HTMLLinkElement: W.HtmlElement, HTMLMapElement: W.HtmlElement, HTMLMediaElement: W.HtmlElement, HTMLMenuElement: W.HtmlElement, HTMLMetaElement: W.HtmlElement, HTMLMeterElement: W.HtmlElement, HTMLModElement: W.HtmlElement, HTMLOListElement: W.HtmlElement, HTMLObjectElement: W.HtmlElement, HTMLOptGroupElement: W.HtmlElement, HTMLOptionElement: W.HtmlElement, HTMLOutputElement: W.HtmlElement, HTMLParagraphElement: W.HtmlElement, HTMLParamElement: W.HtmlElement, HTMLPictureElement: W.HtmlElement, HTMLPreElement: W.HtmlElement, HTMLProgressElement: W.HtmlElement, HTMLQuoteElement: W.HtmlElement, HTMLScriptElement: W.HtmlElement, HTMLShadowElement: W.HtmlElement, HTMLSlotElement: W.HtmlElement, HTMLSourceElement: W.HtmlElement, HTMLSpanElement: W.HtmlElement, HTMLStyleElement: W.HtmlElement, HTMLTableCaptionElement: W.HtmlElement, HTMLTableCellElement: W.HtmlElement, HTMLTableDataCellElement: W.HtmlElement, HTMLTableHeaderCellElement: W.HtmlElement, HTMLTableColElement: W.HtmlElement, HTMLTableElement: W.HtmlElement, HTMLTableRowElement: W.HtmlElement, HTMLTableSectionElement: W.HtmlElement, HTMLTemplateElement: W.HtmlElement, HTMLTextAreaElement: W.HtmlElement, HTMLTimeElement: W.HtmlElement, HTMLTitleElement: W.HtmlElement, HTMLTrackElement: W.HtmlElement, HTMLUListElement: W.HtmlElement, HTMLUnknownElement: W.HtmlElement, HTMLVideoElement: W.HtmlElement, HTMLDirectoryElement: W.HtmlElement, HTMLFontElement: W.HtmlElement, HTMLFrameElement: W.HtmlElement, HTMLFrameSetElement: W.HtmlElement, HTMLMarqueeElement: W.HtmlElement, HTMLElement: W.HtmlElement, HTMLAnchorElement: W.AnchorElement, HTMLAreaElement: W.AreaElement, HTMLDivElement: W.DivElement, DOMException: W.DomException, Element: W.Element, AbortPaymentEvent: W.Event, AnimationEvent: W.Event, AnimationPlaybackEvent: W.Event, ApplicationCacheErrorEvent: W.Event, BackgroundFetchClickEvent: W.Event, BackgroundFetchEvent: W.Event, BackgroundFetchFailEvent: W.Event, BackgroundFetchedEvent: W.Event, BeforeInstallPromptEvent: W.Event, BeforeUnloadEvent: W.Event, BlobEvent: W.Event, CanMakePaymentEvent: W.Event, ClipboardEvent: W.Event, CloseEvent: W.Event, CustomEvent: W.Event, DeviceMotionEvent: W.Event, DeviceOrientationEvent: W.Event, ErrorEvent: W.Event, ExtendableEvent: W.Event, ExtendableMessageEvent: W.Event, FetchEvent: W.Event, FontFaceSetLoadEvent: W.Event, ForeignFetchEvent: W.Event, GamepadEvent: W.Event, HashChangeEvent: W.Event, InstallEvent: W.Event, MediaEncryptedEvent: W.Event, MediaKeyMessageEvent: W.Event, MediaQueryListEvent: W.Event, MediaStreamEvent: W.Event, MediaStreamTrackEvent: W.Event, MessageEvent: W.Event, MIDIConnectionEvent: W.Event, MIDIMessageEvent: W.Event, MutationEvent: W.Event, NotificationEvent: W.Event, PageTransitionEvent: W.Event, PaymentRequestEvent: W.Event, PaymentRequestUpdateEvent: W.Event, PopStateEvent: W.Event, PresentationConnectionAvailableEvent: W.Event, PresentationConnectionCloseEvent: W.Event, ProgressEvent: W.Event, PromiseRejectionEvent: W.Event, PushEvent: W.Event, RTCDataChannelEvent: W.Event, RTCDTMFToneChangeEvent: W.Event, RTCPeerConnectionIceEvent: W.Event, RTCTrackEvent: W.Event, SecurityPolicyViolationEvent: W.Event, SensorErrorEvent: W.Event, SpeechRecognitionError: W.Event, SpeechRecognitionEvent: W.Event, SpeechSynthesisEvent: W.Event, StorageEvent: W.Event, SyncEvent: W.Event, TrackEvent: W.Event, TransitionEvent: W.Event, WebKitTransitionEvent: W.Event, VRDeviceEvent: W.Event, VRDisplayEvent: W.Event, VRSessionEvent: W.Event, MojoInterfaceRequestEvent: W.Event, ResourceProgressEvent: W.Event, USBConnectionEvent: W.Event, IDBVersionChangeEvent: W.Event, AudioProcessingEvent: W.Event, OfflineAudioCompletionEvent: W.Event, WebGLContextEvent: W.Event, Event: W.Event, InputEvent: W.Event, EventTarget: W.EventTarget, HTMLFormElement: W.FormElement, HTMLInputElement: W.InputElement, MouseEvent: W.MouseEvent, DragEvent: W.MouseEvent, PointerEvent: W.MouseEvent, WheelEvent: W.MouseEvent, Document: W.Node, HTMLDocument: W.Node, Node: W.Node, HTMLSelectElement: W.SelectElement, CompositionEvent: W.UIEvent, FocusEvent: W.UIEvent, KeyboardEvent: W.UIEvent, TextEvent: W.UIEvent, TouchEvent: W.UIEvent, UIEvent: W.UIEvent, SVGAElement: P.SvgElement, SVGAnimateElement: P.SvgElement, SVGAnimateMotionElement: P.SvgElement, SVGAnimateTransformElement: P.SvgElement, SVGAnimationElement: P.SvgElement, SVGCircleElement: P.SvgElement, SVGClipPathElement: P.SvgElement, SVGDefsElement: P.SvgElement, SVGDescElement: P.SvgElement, SVGDiscardElement: P.SvgElement, SVGEllipseElement: P.SvgElement, SVGFEBlendElement: P.SvgElement, SVGFEColorMatrixElement: P.SvgElement, SVGFEComponentTransferElement: P.SvgElement, SVGFECompositeElement: P.SvgElement, SVGFEConvolveMatrixElement: P.SvgElement, SVGFEDiffuseLightingElement: P.SvgElement, SVGFEDisplacementMapElement: P.SvgElement, SVGFEDistantLightElement: P.SvgElement, SVGFEFloodElement: P.SvgElement, SVGFEFuncAElement: P.SvgElement, SVGFEFuncBElement: P.SvgElement, SVGFEFuncGElement: P.SvgElement, SVGFEFuncRElement: P.SvgElement, SVGFEGaussianBlurElement: P.SvgElement, SVGFEImageElement: P.SvgElement, SVGFEMergeElement: P.SvgElement, SVGFEMergeNodeElement: P.SvgElement, SVGFEMorphologyElement: P.SvgElement, SVGFEOffsetElement: P.SvgElement, SVGFEPointLightElement: P.SvgElement, SVGFESpecularLightingElement: P.SvgElement, SVGFESpotLightElement: P.SvgElement, SVGFETileElement: P.SvgElement, SVGFETurbulenceElement: P.SvgElement, SVGFilterElement: P.SvgElement, SVGForeignObjectElement: P.SvgElement, SVGGElement: P.SvgElement, SVGGeometryElement: P.SvgElement, SVGGraphicsElement: P.SvgElement, SVGImageElement: P.SvgElement, SVGLineElement: P.SvgElement, SVGLinearGradientElement: P.SvgElement, SVGMarkerElement: P.SvgElement, SVGMaskElement: P.SvgElement, SVGMetadataElement: P.SvgElement, SVGPathElement: P.SvgElement, SVGPatternElement: P.SvgElement, SVGPolygonElement: P.SvgElement, SVGPolylineElement: P.SvgElement, SVGRadialGradientElement: P.SvgElement, SVGRectElement: P.SvgElement, SVGScriptElement: P.SvgElement, SVGSetElement: P.SvgElement, SVGStopElement: P.SvgElement, SVGStyleElement: P.SvgElement, SVGElement: P.SvgElement, SVGSVGElement: P.SvgElement, SVGSwitchElement: P.SvgElement, SVGSymbolElement: P.SvgElement, SVGTSpanElement: P.SvgElement, SVGTextContentElement: P.SvgElement, SVGTextElement: P.SvgElement, SVGTextPathElement: P.SvgElement, SVGTextPositioningElement: P.SvgElement, SVGTitleElement: P.SvgElement, SVGUseElement: P.SvgElement, SVGViewElement: P.SvgElement, SVGGradientElement: P.SvgElement, SVGComponentTransferFunctionElement: P.SvgElement, SVGFEDropShadowElement: P.SvgElement, SVGMPathElement: P.SvgElement});
-    hunkHelpers.setOrUpdateLeafTags({DOMError: true, MediaError: true, NavigatorUserMediaError: true, OverconstrainedError: true, PositionError: true, SQLError: true, HTMLAudioElement: true, HTMLBRElement: true, HTMLBaseElement: true, HTMLBodyElement: true, HTMLButtonElement: true, HTMLCanvasElement: true, HTMLContentElement: true, HTMLDListElement: true, HTMLDataElement: true, HTMLDataListElement: true, HTMLDetailsElement: true, HTMLDialogElement: true, HTMLEmbedElement: true, HTMLFieldSetElement: true, HTMLHRElement: true, HTMLHeadElement: true, HTMLHeadingElement: true, HTMLHtmlElement: true, HTMLIFrameElement: true, HTMLImageElement: true, HTMLLIElement: true, HTMLLabelElement: true, HTMLLegendElement: true, HTMLLinkElement: true, HTMLMapElement: true, HTMLMediaElement: true, HTMLMenuElement: true, HTMLMetaElement: true, HTMLMeterElement: true, HTMLModElement: true, HTMLOListElement: true, HTMLObjectElement: true, HTMLOptGroupElement: true, HTMLOptionElement: true, HTMLOutputElement: true, HTMLParagraphElement: true, HTMLParamElement: true, HTMLPictureElement: true, HTMLPreElement: true, HTMLProgressElement: true, HTMLQuoteElement: true, HTMLScriptElement: true, HTMLShadowElement: true, HTMLSlotElement: true, HTMLSourceElement: true, HTMLSpanElement: true, HTMLStyleElement: true, HTMLTableCaptionElement: true, HTMLTableCellElement: true, HTMLTableDataCellElement: true, HTMLTableHeaderCellElement: true, HTMLTableColElement: true, HTMLTableElement: true, HTMLTableRowElement: true, HTMLTableSectionElement: true, HTMLTemplateElement: true, HTMLTextAreaElement: true, HTMLTimeElement: true, HTMLTitleElement: true, HTMLTrackElement: true, HTMLUListElement: true, HTMLUnknownElement: true, HTMLVideoElement: true, HTMLDirectoryElement: true, HTMLFontElement: true, HTMLFrameElement: true, HTMLFrameSetElement: true, HTMLMarqueeElement: true, HTMLElement: false, HTMLAnchorElement: true, HTMLAreaElement: true, HTMLDivElement: true, DOMException: true, Element: false, AbortPaymentEvent: true, AnimationEvent: true, AnimationPlaybackEvent: true, ApplicationCacheErrorEvent: true, BackgroundFetchClickEvent: true, BackgroundFetchEvent: true, BackgroundFetchFailEvent: true, BackgroundFetchedEvent: true, BeforeInstallPromptEvent: true, BeforeUnloadEvent: true, BlobEvent: true, CanMakePaymentEvent: true, ClipboardEvent: true, CloseEvent: true, CustomEvent: true, DeviceMotionEvent: true, DeviceOrientationEvent: true, ErrorEvent: true, ExtendableEvent: true, ExtendableMessageEvent: true, FetchEvent: true, FontFaceSetLoadEvent: true, ForeignFetchEvent: true, GamepadEvent: true, HashChangeEvent: true, InstallEvent: true, MediaEncryptedEvent: true, MediaKeyMessageEvent: true, MediaQueryListEvent: true, MediaStreamEvent: true, MediaStreamTrackEvent: true, MessageEvent: true, MIDIConnectionEvent: true, MIDIMessageEvent: true, MutationEvent: true, NotificationEvent: true, PageTransitionEvent: true, PaymentRequestEvent: true, PaymentRequestUpdateEvent: true, PopStateEvent: true, PresentationConnectionAvailableEvent: true, PresentationConnectionCloseEvent: true, ProgressEvent: true, PromiseRejectionEvent: true, PushEvent: true, RTCDataChannelEvent: true, RTCDTMFToneChangeEvent: true, RTCPeerConnectionIceEvent: true, RTCTrackEvent: true, SecurityPolicyViolationEvent: true, SensorErrorEvent: true, SpeechRecognitionError: true, SpeechRecognitionEvent: true, SpeechSynthesisEvent: true, StorageEvent: true, SyncEvent: true, TrackEvent: true, TransitionEvent: true, WebKitTransitionEvent: true, VRDeviceEvent: true, VRDisplayEvent: true, VRSessionEvent: true, MojoInterfaceRequestEvent: true, ResourceProgressEvent: true, USBConnectionEvent: true, IDBVersionChangeEvent: true, AudioProcessingEvent: true, OfflineAudioCompletionEvent: true, WebGLContextEvent: true, Event: false, InputEvent: false, EventTarget: false, HTMLFormElement: true, HTMLInputElement: true, MouseEvent: true, DragEvent: true, PointerEvent: true, WheelEvent: true, Document: true, HTMLDocument: true, Node: false, HTMLSelectElement: true, CompositionEvent: true, FocusEvent: true, KeyboardEvent: true, TextEvent: true, TouchEvent: true, UIEvent: false, SVGAElement: true, SVGAnimateElement: true, SVGAnimateMotionElement: true, SVGAnimateTransformElement: true, SVGAnimationElement: true, SVGCircleElement: true, SVGClipPathElement: true, SVGDefsElement: true, SVGDescElement: true, SVGDiscardElement: true, SVGEllipseElement: true, SVGFEBlendElement: true, SVGFEColorMatrixElement: true, SVGFEComponentTransferElement: true, SVGFECompositeElement: true, SVGFEConvolveMatrixElement: true, SVGFEDiffuseLightingElement: true, SVGFEDisplacementMapElement: true, SVGFEDistantLightElement: true, SVGFEFloodElement: true, SVGFEFuncAElement: true, SVGFEFuncBElement: true, SVGFEFuncGElement: true, SVGFEFuncRElement: true, SVGFEGaussianBlurElement: true, SVGFEImageElement: true, SVGFEMergeElement: true, SVGFEMergeNodeElement: true, SVGFEMorphologyElement: true, SVGFEOffsetElement: true, SVGFEPointLightElement: true, SVGFESpecularLightingElement: true, SVGFESpotLightElement: true, SVGFETileElement: true, SVGFETurbulenceElement: true, SVGFilterElement: true, SVGForeignObjectElement: true, SVGGElement: true, SVGGeometryElement: true, SVGGraphicsElement: true, SVGImageElement: true, SVGLineElement: true, SVGLinearGradientElement: true, SVGMarkerElement: true, SVGMaskElement: true, SVGMetadataElement: true, SVGPathElement: true, SVGPatternElement: true, SVGPolygonElement: true, SVGPolylineElement: true, SVGRadialGradientElement: true, SVGRectElement: true, SVGScriptElement: true, SVGSetElement: true, SVGStopElement: true, SVGStyleElement: true, SVGElement: true, SVGSVGElement: true, SVGSwitchElement: true, SVGSymbolElement: true, SVGTSpanElement: true, SVGTextContentElement: true, SVGTextElement: true, SVGTextPathElement: true, SVGTextPositioningElement: true, SVGTitleElement: true, SVGUseElement: true, SVGViewElement: true, SVGGradientElement: true, SVGComponentTransferFunctionElement: true, SVGFEDropShadowElement: true, SVGMPathElement: true});
+    hunkHelpers.setOrUpdateInterceptorsByTag({DOMError: J.Interceptor, DOMImplementation: J.Interceptor, MediaError: J.Interceptor, NavigatorUserMediaError: J.Interceptor, OverconstrainedError: J.Interceptor, PositionError: J.Interceptor, Range: J.Interceptor, SQLError: J.Interceptor, HTMLAudioElement: W.HtmlElement, HTMLBRElement: W.HtmlElement, HTMLButtonElement: W.HtmlElement, HTMLCanvasElement: W.HtmlElement, HTMLContentElement: W.HtmlElement, HTMLDListElement: W.HtmlElement, HTMLDataElement: W.HtmlElement, HTMLDataListElement: W.HtmlElement, HTMLDetailsElement: W.HtmlElement, HTMLDialogElement: W.HtmlElement, HTMLDivElement: W.HtmlElement, HTMLEmbedElement: W.HtmlElement, HTMLFieldSetElement: W.HtmlElement, HTMLHRElement: W.HtmlElement, HTMLHeadElement: W.HtmlElement, HTMLHeadingElement: W.HtmlElement, HTMLHtmlElement: W.HtmlElement, HTMLIFrameElement: W.HtmlElement, HTMLImageElement: W.HtmlElement, HTMLLIElement: W.HtmlElement, HTMLLegendElement: W.HtmlElement, HTMLLinkElement: W.HtmlElement, HTMLMapElement: W.HtmlElement, HTMLMediaElement: W.HtmlElement, HTMLMenuElement: W.HtmlElement, HTMLMetaElement: W.HtmlElement, HTMLMeterElement: W.HtmlElement, HTMLModElement: W.HtmlElement, HTMLOListElement: W.HtmlElement, HTMLObjectElement: W.HtmlElement, HTMLOptGroupElement: W.HtmlElement, HTMLOptionElement: W.HtmlElement, HTMLOutputElement: W.HtmlElement, HTMLParagraphElement: W.HtmlElement, HTMLParamElement: W.HtmlElement, HTMLPictureElement: W.HtmlElement, HTMLPreElement: W.HtmlElement, HTMLProgressElement: W.HtmlElement, HTMLQuoteElement: W.HtmlElement, HTMLScriptElement: W.HtmlElement, HTMLShadowElement: W.HtmlElement, HTMLSlotElement: W.HtmlElement, HTMLSourceElement: W.HtmlElement, HTMLSpanElement: W.HtmlElement, HTMLStyleElement: W.HtmlElement, HTMLTableCaptionElement: W.HtmlElement, HTMLTableCellElement: W.HtmlElement, HTMLTableDataCellElement: W.HtmlElement, HTMLTableHeaderCellElement: W.HtmlElement, HTMLTableColElement: W.HtmlElement, HTMLTextAreaElement: W.HtmlElement, HTMLTimeElement: W.HtmlElement, HTMLTitleElement: W.HtmlElement, HTMLTrackElement: W.HtmlElement, HTMLUListElement: W.HtmlElement, HTMLUnknownElement: W.HtmlElement, HTMLVideoElement: W.HtmlElement, HTMLDirectoryElement: W.HtmlElement, HTMLFontElement: W.HtmlElement, HTMLFrameElement: W.HtmlElement, HTMLFrameSetElement: W.HtmlElement, HTMLMarqueeElement: W.HtmlElement, HTMLElement: W.HtmlElement, HTMLAnchorElement: W.AnchorElement, HTMLAreaElement: W.AreaElement, HTMLBaseElement: W.BaseElement, HTMLBodyElement: W.BodyElement, CDATASection: W.CharacterData, CharacterData: W.CharacterData, Comment: W.CharacterData, ProcessingInstruction: W.CharacterData, Text: W.CharacterData, DOMException: W.DomException, Element: W.Element, AbortPaymentEvent: W.Event, AnimationEvent: W.Event, AnimationPlaybackEvent: W.Event, ApplicationCacheErrorEvent: W.Event, BackgroundFetchClickEvent: W.Event, BackgroundFetchEvent: W.Event, BackgroundFetchFailEvent: W.Event, BackgroundFetchedEvent: W.Event, BeforeInstallPromptEvent: W.Event, BeforeUnloadEvent: W.Event, BlobEvent: W.Event, CanMakePaymentEvent: W.Event, ClipboardEvent: W.Event, CloseEvent: W.Event, CustomEvent: W.Event, DeviceMotionEvent: W.Event, DeviceOrientationEvent: W.Event, ErrorEvent: W.Event, ExtendableEvent: W.Event, ExtendableMessageEvent: W.Event, FetchEvent: W.Event, FontFaceSetLoadEvent: W.Event, ForeignFetchEvent: W.Event, GamepadEvent: W.Event, HashChangeEvent: W.Event, InstallEvent: W.Event, MediaEncryptedEvent: W.Event, MediaKeyMessageEvent: W.Event, MediaQueryListEvent: W.Event, MediaStreamEvent: W.Event, MediaStreamTrackEvent: W.Event, MessageEvent: W.Event, MIDIConnectionEvent: W.Event, MIDIMessageEvent: W.Event, MutationEvent: W.Event, NotificationEvent: W.Event, PageTransitionEvent: W.Event, PaymentRequestEvent: W.Event, PaymentRequestUpdateEvent: W.Event, PopStateEvent: W.Event, PresentationConnectionAvailableEvent: W.Event, PresentationConnectionCloseEvent: W.Event, ProgressEvent: W.Event, PromiseRejectionEvent: W.Event, PushEvent: W.Event, RTCDataChannelEvent: W.Event, RTCDTMFToneChangeEvent: W.Event, RTCPeerConnectionIceEvent: W.Event, RTCTrackEvent: W.Event, SecurityPolicyViolationEvent: W.Event, SensorErrorEvent: W.Event, SpeechRecognitionError: W.Event, SpeechRecognitionEvent: W.Event, SpeechSynthesisEvent: W.Event, StorageEvent: W.Event, SyncEvent: W.Event, TrackEvent: W.Event, TransitionEvent: W.Event, WebKitTransitionEvent: W.Event, VRDeviceEvent: W.Event, VRDisplayEvent: W.Event, VRSessionEvent: W.Event, MojoInterfaceRequestEvent: W.Event, ResourceProgressEvent: W.Event, USBConnectionEvent: W.Event, IDBVersionChangeEvent: W.Event, AudioProcessingEvent: W.Event, OfflineAudioCompletionEvent: W.Event, WebGLContextEvent: W.Event, Event: W.Event, InputEvent: W.Event, Window: W.EventTarget, DOMWindow: W.EventTarget, EventTarget: W.EventTarget, HTMLFormElement: W.FormElement, HTMLInputElement: W.InputElement, HTMLLabelElement: W.LabelElement, Location: W.Location, MouseEvent: W.MouseEvent, DragEvent: W.MouseEvent, PointerEvent: W.MouseEvent, WheelEvent: W.MouseEvent, Document: W.Node, DocumentFragment: W.Node, HTMLDocument: W.Node, ShadowRoot: W.Node, XMLDocument: W.Node, DocumentType: W.Node, Node: W.Node, NodeList: W.NodeList, RadioNodeList: W.NodeList, HTMLSelectElement: W.SelectElement, HTMLTableElement: W.TableElement, HTMLTableRowElement: W.TableRowElement, HTMLTableSectionElement: W.TableSectionElement, HTMLTemplateElement: W.TemplateElement, CompositionEvent: W.UIEvent, FocusEvent: W.UIEvent, KeyboardEvent: W.UIEvent, TextEvent: W.UIEvent, TouchEvent: W.UIEvent, UIEvent: W.UIEvent, Attr: W._Attr, NamedNodeMap: W._NamedNodeMap, MozNamedAttrMap: W._NamedNodeMap, SVGScriptElement: P.ScriptElement, SVGAElement: P.SvgElement, SVGAnimateElement: P.SvgElement, SVGAnimateMotionElement: P.SvgElement, SVGAnimateTransformElement: P.SvgElement, SVGAnimationElement: P.SvgElement, SVGCircleElement: P.SvgElement, SVGClipPathElement: P.SvgElement, SVGDefsElement: P.SvgElement, SVGDescElement: P.SvgElement, SVGDiscardElement: P.SvgElement, SVGEllipseElement: P.SvgElement, SVGFEBlendElement: P.SvgElement, SVGFEColorMatrixElement: P.SvgElement, SVGFEComponentTransferElement: P.SvgElement, SVGFECompositeElement: P.SvgElement, SVGFEConvolveMatrixElement: P.SvgElement, SVGFEDiffuseLightingElement: P.SvgElement, SVGFEDisplacementMapElement: P.SvgElement, SVGFEDistantLightElement: P.SvgElement, SVGFEFloodElement: P.SvgElement, SVGFEFuncAElement: P.SvgElement, SVGFEFuncBElement: P.SvgElement, SVGFEFuncGElement: P.SvgElement, SVGFEFuncRElement: P.SvgElement, SVGFEGaussianBlurElement: P.SvgElement, SVGFEImageElement: P.SvgElement, SVGFEMergeElement: P.SvgElement, SVGFEMergeNodeElement: P.SvgElement, SVGFEMorphologyElement: P.SvgElement, SVGFEOffsetElement: P.SvgElement, SVGFEPointLightElement: P.SvgElement, SVGFESpecularLightingElement: P.SvgElement, SVGFESpotLightElement: P.SvgElement, SVGFETileElement: P.SvgElement, SVGFETurbulenceElement: P.SvgElement, SVGFilterElement: P.SvgElement, SVGForeignObjectElement: P.SvgElement, SVGGElement: P.SvgElement, SVGGeometryElement: P.SvgElement, SVGGraphicsElement: P.SvgElement, SVGImageElement: P.SvgElement, SVGLineElement: P.SvgElement, SVGLinearGradientElement: P.SvgElement, SVGMarkerElement: P.SvgElement, SVGMaskElement: P.SvgElement, SVGMetadataElement: P.SvgElement, SVGPathElement: P.SvgElement, SVGPatternElement: P.SvgElement, SVGPolygonElement: P.SvgElement, SVGPolylineElement: P.SvgElement, SVGRadialGradientElement: P.SvgElement, SVGRectElement: P.SvgElement, SVGSetElement: P.SvgElement, SVGStopElement: P.SvgElement, SVGStyleElement: P.SvgElement, SVGSVGElement: P.SvgElement, SVGSwitchElement: P.SvgElement, SVGSymbolElement: P.SvgElement, SVGTSpanElement: P.SvgElement, SVGTextContentElement: P.SvgElement, SVGTextElement: P.SvgElement, SVGTextPathElement: P.SvgElement, SVGTextPositioningElement: P.SvgElement, SVGTitleElement: P.SvgElement, SVGUseElement: P.SvgElement, SVGViewElement: P.SvgElement, SVGGradientElement: P.SvgElement, SVGComponentTransferFunctionElement: P.SvgElement, SVGFEDropShadowElement: P.SvgElement, SVGMPathElement: P.SvgElement, SVGElement: P.SvgElement});
+    hunkHelpers.setOrUpdateLeafTags({DOMError: true, DOMImplementation: true, MediaError: true, NavigatorUserMediaError: true, OverconstrainedError: true, PositionError: true, Range: true, SQLError: true, HTMLAudioElement: true, HTMLBRElement: true, HTMLButtonElement: true, HTMLCanvasElement: true, HTMLContentElement: true, HTMLDListElement: true, HTMLDataElement: true, HTMLDataListElement: true, HTMLDetailsElement: true, HTMLDialogElement: true, HTMLDivElement: true, HTMLEmbedElement: true, HTMLFieldSetElement: true, HTMLHRElement: true, HTMLHeadElement: true, HTMLHeadingElement: true, HTMLHtmlElement: true, HTMLIFrameElement: true, HTMLImageElement: true, HTMLLIElement: true, HTMLLegendElement: true, HTMLLinkElement: true, HTMLMapElement: true, HTMLMediaElement: true, HTMLMenuElement: true, HTMLMetaElement: true, HTMLMeterElement: true, HTMLModElement: true, HTMLOListElement: true, HTMLObjectElement: true, HTMLOptGroupElement: true, HTMLOptionElement: true, HTMLOutputElement: true, HTMLParagraphElement: true, HTMLParamElement: true, HTMLPictureElement: true, HTMLPreElement: true, HTMLProgressElement: true, HTMLQuoteElement: true, HTMLScriptElement: true, HTMLShadowElement: true, HTMLSlotElement: true, HTMLSourceElement: true, HTMLSpanElement: true, HTMLStyleElement: true, HTMLTableCaptionElement: true, HTMLTableCellElement: true, HTMLTableDataCellElement: true, HTMLTableHeaderCellElement: true, HTMLTableColElement: true, HTMLTextAreaElement: true, HTMLTimeElement: true, HTMLTitleElement: true, HTMLTrackElement: true, HTMLUListElement: true, HTMLUnknownElement: true, HTMLVideoElement: true, HTMLDirectoryElement: true, HTMLFontElement: true, HTMLFrameElement: true, HTMLFrameSetElement: true, HTMLMarqueeElement: true, HTMLElement: false, HTMLAnchorElement: true, HTMLAreaElement: true, HTMLBaseElement: true, HTMLBodyElement: true, CDATASection: true, CharacterData: true, Comment: true, ProcessingInstruction: true, Text: true, DOMException: true, Element: false, AbortPaymentEvent: true, AnimationEvent: true, AnimationPlaybackEvent: true, ApplicationCacheErrorEvent: true, BackgroundFetchClickEvent: true, BackgroundFetchEvent: true, BackgroundFetchFailEvent: true, BackgroundFetchedEvent: true, BeforeInstallPromptEvent: true, BeforeUnloadEvent: true, BlobEvent: true, CanMakePaymentEvent: true, ClipboardEvent: true, CloseEvent: true, CustomEvent: true, DeviceMotionEvent: true, DeviceOrientationEvent: true, ErrorEvent: true, ExtendableEvent: true, ExtendableMessageEvent: true, FetchEvent: true, FontFaceSetLoadEvent: true, ForeignFetchEvent: true, GamepadEvent: true, HashChangeEvent: true, InstallEvent: true, MediaEncryptedEvent: true, MediaKeyMessageEvent: true, MediaQueryListEvent: true, MediaStreamEvent: true, MediaStreamTrackEvent: true, MessageEvent: true, MIDIConnectionEvent: true, MIDIMessageEvent: true, MutationEvent: true, NotificationEvent: true, PageTransitionEvent: true, PaymentRequestEvent: true, PaymentRequestUpdateEvent: true, PopStateEvent: true, PresentationConnectionAvailableEvent: true, PresentationConnectionCloseEvent: true, ProgressEvent: true, PromiseRejectionEvent: true, PushEvent: true, RTCDataChannelEvent: true, RTCDTMFToneChangeEvent: true, RTCPeerConnectionIceEvent: true, RTCTrackEvent: true, SecurityPolicyViolationEvent: true, SensorErrorEvent: true, SpeechRecognitionError: true, SpeechRecognitionEvent: true, SpeechSynthesisEvent: true, StorageEvent: true, SyncEvent: true, TrackEvent: true, TransitionEvent: true, WebKitTransitionEvent: true, VRDeviceEvent: true, VRDisplayEvent: true, VRSessionEvent: true, MojoInterfaceRequestEvent: true, ResourceProgressEvent: true, USBConnectionEvent: true, IDBVersionChangeEvent: true, AudioProcessingEvent: true, OfflineAudioCompletionEvent: true, WebGLContextEvent: true, Event: false, InputEvent: false, Window: true, DOMWindow: true, EventTarget: false, HTMLFormElement: true, HTMLInputElement: true, HTMLLabelElement: true, Location: true, MouseEvent: true, DragEvent: true, PointerEvent: true, WheelEvent: true, Document: true, DocumentFragment: true, HTMLDocument: true, ShadowRoot: true, XMLDocument: true, DocumentType: true, Node: false, NodeList: true, RadioNodeList: true, HTMLSelectElement: true, HTMLTableElement: true, HTMLTableRowElement: true, HTMLTableSectionElement: true, HTMLTemplateElement: true, CompositionEvent: true, FocusEvent: true, KeyboardEvent: true, TextEvent: true, TouchEvent: true, UIEvent: false, Attr: true, NamedNodeMap: true, MozNamedAttrMap: true, SVGScriptElement: true, SVGAElement: true, SVGAnimateElement: true, SVGAnimateMotionElement: true, SVGAnimateTransformElement: true, SVGAnimationElement: true, SVGCircleElement: true, SVGClipPathElement: true, SVGDefsElement: true, SVGDescElement: true, SVGDiscardElement: true, SVGEllipseElement: true, SVGFEBlendElement: true, SVGFEColorMatrixElement: true, SVGFEComponentTransferElement: true, SVGFECompositeElement: true, SVGFEConvolveMatrixElement: true, SVGFEDiffuseLightingElement: true, SVGFEDisplacementMapElement: true, SVGFEDistantLightElement: true, SVGFEFloodElement: true, SVGFEFuncAElement: true, SVGFEFuncBElement: true, SVGFEFuncGElement: true, SVGFEFuncRElement: true, SVGFEGaussianBlurElement: true, SVGFEImageElement: true, SVGFEMergeElement: true, SVGFEMergeNodeElement: true, SVGFEMorphologyElement: true, SVGFEOffsetElement: true, SVGFEPointLightElement: true, SVGFESpecularLightingElement: true, SVGFESpotLightElement: true, SVGFETileElement: true, SVGFETurbulenceElement: true, SVGFilterElement: true, SVGForeignObjectElement: true, SVGGElement: true, SVGGeometryElement: true, SVGGraphicsElement: true, SVGImageElement: true, SVGLineElement: true, SVGLinearGradientElement: true, SVGMarkerElement: true, SVGMaskElement: true, SVGMetadataElement: true, SVGPathElement: true, SVGPatternElement: true, SVGPolygonElement: true, SVGPolylineElement: true, SVGRadialGradientElement: true, SVGRectElement: true, SVGSetElement: true, SVGStopElement: true, SVGStyleElement: true, SVGSVGElement: true, SVGSwitchElement: true, SVGSymbolElement: true, SVGTSpanElement: true, SVGTextContentElement: true, SVGTextElement: true, SVGTextPathElement: true, SVGTextPositioningElement: true, SVGTitleElement: true, SVGUseElement: true, SVGViewElement: true, SVGGradientElement: true, SVGComponentTransferFunctionElement: true, SVGFEDropShadowElement: true, SVGMPathElement: true, SVGElement: false});
   })();
   convertAllToFastObject(holders);
   convertToFastObject($);
@@ -3654,10 +5243,10 @@
   })(function(currentScript) {
     init.currentScript = currentScript;
     if (typeof dartMainRunner === "function")
-      dartMainRunner(U.main, []);
+      dartMainRunner(L.main, []);
     else
-      U.main([]);
+      L.main([]);
   });
 })();
 
-//# sourceMappingURL=web_guessing.js.map
+//# sourceMappingURL=weight_change.js.map
