@@ -25,14 +25,20 @@
 <v t="leo.20180902120523.12"><vh>投影片快捷鍵</vh></v>
 </v>
 <v t="leo.20180902120523.13"><vh>各式內容引用範例</vh>
+<v t="leo.20200109140550.1"><vh>sum</vh>
+<v t="leo.20200109140550.2"><vh>sum</vh></v>
+</v>
+<v t="leo.20200109140450.1"><vh>for</vh>
+<v t="leo.20200109140450.2"><vh>for</vh></v>
+</v>
+<v t="leo.20200109140145.1"><vh>重量轉換</vh>
+<v t="leo.20200109140145.2"><vh>重量轉換</vh></v>
+</v>
 <v t="leo.20180902120523.14"><vh>溫度轉換</vh>
 <v t="leo.20180902120523.15"><vh>溫度轉換</vh></v>
 </v>
 <v t="leo.20200108224913.1"><vh>國旗</vh>
 <v t="leo.20200108224913.2"><vh>國旗</vh></v>
-</v>
-<v t="leo.20180902120523.16"><vh>亂數分組</vh>
-<v t="leo.20180902120523.17"><vh>亂數分組</vh></v>
 </v>
 <v t="leo.20180902120523.18"><vh>心得</vh>
 <v t="leo.20180902120523.19"><vh>心得</vh></v>
@@ -48,7 +54,7 @@
 </vnodes>
 <tnodes>
 <t tx="leo.20180902120523.1"></t>
-<t tx="leo.20180902120523.10">## CMSimfly 網際內容管理
+<t tx="leo.20180902120523.10">## 40823246
 
 ### KMOLab
 
@@ -96,23 +102,7 @@ Created by [KMOLab](http://lab.kmol.info/)
 						
 </t>
 <t tx="leo.20180902120523.15">&lt;h3&gt;溫度轉換&lt;/h3&gt;
-&lt;iframe src="https://dartpad.github.io/embed-html.html?gh_owner=40823246&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/fortemp&amp;theme=dark" width="800" height="550"&gt;&lt;/iframe&gt;</t>
-<t tx="leo.20180902120523.16">&lt;section data-markdown&gt;
-    &lt;script type="text/template"&gt;
-&lt;!-- 請注意, @others 不可以內縮 --&gt;
-@others
-    &lt;/script&gt;
-&lt;/section&gt;
-
-
-
-						
-</t>
-<t tx="leo.20180902120523.17">
-&lt;h3&gt;亂數分組:&lt;/h3&gt;
-&lt;p&gt;學員名單 URL: &lt;input id="studListUrl" size="50" type="text" value="https://mde.tw/cp2019/downloads/2019fall_cp_1b_list.txt"/&gt;&lt;br/&gt; 每組人數: &lt;input id="grpNum" size="3" type="text" value="10"/&gt;&lt;br/&gt; &lt;input id="submit" type="submit" value="開始分組"/&gt;&lt;br/&gt; &lt;textarea cols="80" id="output" rows="10"&gt;&lt;/textarea&gt;&lt;/p&gt;
-&lt;p&gt;
-&lt;script src="./../downloads/dart_ex/ramdon/ramdon.js"&gt;&lt;/script&gt;</t>
+&lt;iframe src="https://dartpad.github.io/embed-html.html?gh_owner=40823246&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/cf&amp;theme=dark" width="800" height="550"&gt;&lt;/iframe&gt;</t>
 <t tx="leo.20180902120523.18">&lt;section data-markdown&gt;
     &lt;script type="text/template"&gt;
 @others
@@ -125,7 +115,7 @@ Created by [KMOLab](http://lab.kmol.info/)
 <t tx="leo.20180902120523.19">&lt;h3&gt;心得&lt;/h3&gt;
 
 在這個學期中,我學習到了很多,見識到了程式的重要
-尤其是利用Github倉儲,來管理自己的網頁,期望未來
+尤其是利用Github倉儲,ssh推送,來管理自己的網頁,期望未來
 能應用在工作的項目中。</t>
 <t tx="leo.20180902120523.2"></t>
 <t tx="leo.20180902120523.3">@language xml
@@ -309,6 +299,49 @@ vertical: body pane on the botton</t>
 						
 </t>
 <t tx="leo.20200108224913.2">&lt;h3&gt;繪製國旗&lt;/h3&gt;
-&lt;iframe src="https://dartpad.github.io/embed-html.html?gh_owner=40823246&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/roc_flag&amp;theme=dark" width="800" height="550"&gt;&lt;/iframe&gt;</t>
+&lt;iframe src="https://dartpad.github.io/embed-html.html?gh_owner=40823246&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/usa_flag&amp;theme=dark" width="800" height="550"&gt;&lt;/iframe&gt;
+</t>
+<t tx="leo.20200109140145.1">&lt;section data-markdown&gt;
+    &lt;script type="text/template"&gt;
+&lt;!-- 請注意, @others 不可以內縮 --&gt;
+@others
+    &lt;/script&gt;
+&lt;/section&gt;
+
+
+
+						
+</t>
+<t tx="leo.20200109140145.2">&lt;h3&gt;溫度轉換&lt;/h3&gt;
+&lt;iframe src="https://dartpad.github.io/embed-html.html?gh_owner=40823246&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/lbtokg&amp;theme=dark" width="800" height="550"&gt;&lt;/iframe&gt;
+</t>
+<t tx="leo.20200109140450.1">&lt;section data-markdown&gt;
+    &lt;script type="text/template"&gt;
+&lt;!-- 請注意, @others 不可以內縮 --&gt;
+@others
+    &lt;/script&gt;
+&lt;/section&gt;
+
+
+
+						
+</t>
+<t tx="leo.20200109140450.2">&lt;h3&gt;溫度轉換&lt;/h3&gt;
+&lt;iframe src="https://dartpad.github.io/embed-html.html?gh_owner=40823246&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/for&amp;theme=dark" width="800" height="550"&gt;&lt;/iframe&gt;
+</t>
+<t tx="leo.20200109140550.1">&lt;section data-markdown&gt;
+    &lt;script type="text/template"&gt;
+&lt;!-- 請注意, @others 不可以內縮 --&gt;
+@others
+    &lt;/script&gt;
+&lt;/section&gt;
+
+
+
+						
+</t>
+<t tx="leo.20200109140550.2">&lt;h3&gt;溫度轉換&lt;/h3&gt;
+&lt;iframe src="https://dartpad.github.io/embed-html.html?gh_owner=40823246&amp;gh_repo=cp2019&amp;gh_path=downloads/dart_ex/sum&amp;theme=dark" width="800" height="550"&gt;&lt;/iframe&gt;
+</t>
 </tnodes>
 </leo_file>
